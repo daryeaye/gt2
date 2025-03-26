@@ -20,6 +20,24 @@
       flex-direction: column;
       align-items: center;
     }
+    /* Header styling for name input and progress bar */
+    #header {
+      width: 960px;
+      background: #eee;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    #progressBar {
+      width: 100%;
+      background: #ccc;
+      height: 20px;
+      margin-top: 10px;
+    }
+    #progress {
+      width: 0%;
+      background: green;
+      height: 100%;
+    }
     /* The container remains 960px x 540px */
     #container {
       position: relative;
@@ -37,7 +55,6 @@
       width: 960px;
       height: 540px;
       display: none;
-      /* Background will be set inline per page */
     }
     .page.active {
       display: block;
@@ -52,7 +69,7 @@
     .transparent {
       background-color: transparent !important;
     }
-    /* Styling for typeable boxes: now with light blue 50% transparent background and font size 22px */
+    /* Styling for typeable boxes */
     input.typeable {
       position: absolute;
       font-family: "Comic Sans MS", sans-serif;
@@ -92,6 +109,16 @@
 </head>
 <body>
   <div id="app-container">
+    <!-- Added Header for Name Input and Progress Bar -->
+    <div id="header">
+      <input type="text" id="username" placeholder="Enter your name" style="font-size:16px; padding:5px;" />
+      <button id="confirmBtn" onclick="confirmName()">Confirm</button>
+      <div id="progressBar">
+        <div id="progress"></div>
+      </div>
+      <span id="progressText">0% completed</span>
+    </div>
+    
     <div id="container">
       <!-- Page 1 with PDF links and background image 2-01.jpg -->
       <div id="page1" class="page active" style="background: url('https://daryeaye.github.io/gt2/2-01.jpg') no-repeat center/cover;">
@@ -121,37 +148,28 @@
       
       <!-- Page 4 with background 2-04.jpg -->
       <div id="page4" class="page" style="background: url('https://daryeaye.github.io/gt2/2-04.jpg') no-repeat center/cover;">
-        <!-- Right box: clickable GeoGebra link -->
         <a href="https://www.geogebra.org/m/nrmkmuvz" target="_blank">
           <div class="box transparent" style="left:702px; top:162px; width:190px; height:181px;"></div>
         </a>
-        <!-- Bottom-left typeable box: centered text -->
         <input type="text" id="p4box1" class="typeable" style="left:289px; top:414px; width:92px; height:46px; text-align: center;" />
       </div>
       
       <!-- Page 5 with background 2-05.jpg -->
       <div id="page5" class="page" style="background: url('https://daryeaye.github.io/gt2/2-05.jpg') no-repeat center/cover;">
-        <!-- Top-right box: clickable GeoGebra link -->
         <a href="https://www.geogebra.org/m/nrmkmuvz" target="_blank">
           <div class="box transparent" style="left:702px; top:162px; width:190px; height:181px;"></div>
         </a>
-        <!-- Middle-top typeable box (answer must be "45") -->
         <input type="text" id="middleTopInput" class="typeable" style="left:486px; top:252px; width:92px; height:46px; text-align: center;" />
-        <!-- Middle-bottom typeable box (answer must be "45") -->
         <input type="text" id="middleBottomInput" class="typeable" style="left:479px; top:320px; width:91px; height:47px; text-align: center;" />
-        <!-- Bottom typeable box -->
         <input type="text" id="bottomInput" class="typeable" style="left:45px; top:433px; width:622px; height:87px; text-align: left;" />
       </div>
       
       <!-- Page 6 with background 2-06.jpg -->
       <div id="page6" class="page" style="background: url('https://daryeaye.github.io/gt2/2-06.jpg') no-repeat center/cover;">
-        <!-- Top-right box: clickable GeoGebra link -->
         <a href="https://www.geogebra.org/m/nrmkmuvz" target="_blank">
           <div class="box transparent" style="left:702px; top:162px; width:190px; height:181px;"></div>
         </a>
-        <!-- Middle box: typeable input that requires answer "30" -->
         <input type="text" id="page6MiddleInput" class="typeable" style="left:473px; top:314px; width:92px; height:46px; text-align: center;" />
-        <!-- Bottom box: typeable input -->
         <input type="text" id="page6BottomInput" class="typeable" style="left:45px; top:427px; width:622px; height:87px; text-align: left;" />
       </div>
       
@@ -160,19 +178,13 @@
       
       <!-- Page 8 with background 2-08.jpg -->
       <div id="page8" class="page" style="background: url('https://daryeaye.github.io/gt2/2-08.jpg') no-repeat center/cover;">
-        <!-- Top-right typeable box -->
         <input type="text" id="page8TopRightInput" class="typeable" style="left:621px; top:75px; width:96px; height:49px; text-align: center;" />
-        <!-- Top-middle typeable box -->
         <input type="text" id="page8TopMiddleInput" class="typeable" style="left:432px; top:75px; width:96px; height:49px; text-align: center;" />
-        <!-- Top-left typeable box -->
         <input type="text" id="page8TopLeftInput" class="typeable" style="left:243px; top:75px; width:96px; height:49px; text-align: center;" />
-        <!-- Left big box: clickable link (transparent) -->
         <a href="https://www.geogebra.org/m/wzjqwpbj" target="_blank">
           <div class="box transparent" style="left:41px; top:161px; width:190px; height:192px;"></div>
         </a>
-        <!-- New typeable box -->
         <input type="text" id="page8ExtraInput" class="typeable" style="left:772px; top:233px; width:146px; height:49px; text-align: center;" />
-        <!-- Bottom-right yellowish box with gif -->
         <div class="box transparent" style="left:460px; top:299px; width:209px; height:133px; background-color: #FFEB99;">
           <img src="https://daryeaye.github.io/gt2/triangleinequality.gif" style="width:100%; height:100%;" alt="Triangle Inequality">
         </div>
@@ -180,69 +192,57 @@
       
       <!-- Page 9 with background 2-09.jpg -->
       <div id="page9" class="page" style="background: url('https://daryeaye.github.io/gt2/2-09.jpg') no-repeat center/cover;">
-        <!-- Big square: clickable link -->
         <a href="https://www.geogebra.org/m/wzjqwpbj" target="_blank">
           <div class="box transparent" style="left:740px; top:73px; width:190px; height:192px;"></div>
         </a>
-        <!-- Gif display -->
         <div class="box transparent" style="left:711px; top:358px; width:210px; height:133px;">
           <img src="https://daryeaye.github.io/gt2/triangleinequality.gif" style="width:100%; height:100%;" alt="Triangle Inequality">
         </div>
-        <!-- Column 1 -->
         <input type="text" id="p9box3" class="typeable" style="left:48px; top:269px; width:173px; height:48px; text-align: center;" />
         <input type="text" id="p9box4" class="typeable" style="left:48px; top:323px; width:173px; height:49px; text-align: center;" />
         <input type="text" id="p9box5" class="typeable" style="left:48px; top:378px; width:173px; height:49px; text-align: center;" />
         <input type="text" id="p9box6" class="typeable" style="left:48px; top:433px; width:173px; height:49px; text-align: center;" />
-        <!-- Column 2 -->
         <input type="text" id="p9box7" class="typeable" style="left:256px; top:269px; width:135px; height:48px; text-align: center;" />
         <input type="text" id="p9box8" class="typeable" style="left:256px; top:323px; width:135px; height:49px; text-align: center;" />
         <input type="text" id="p9box9" class="typeable" style="left:256px; top:378px; width:135px; height:49px; text-align: center;" />
         <input type="text" id="p9box10" class="typeable" style="left:256px; top:433px; width:135px; height:49px; text-align: center;" />
-        <!-- Column 3 -->
         <input type="text" id="p9box11" class="typeable" style="left:454px; top:269px; width:65px; height:48px; text-align: center;" />
         <input type="text" id="p9box12" class="typeable" style="left:454px; top:323px; width:65px; height:49px; text-align: center;" />
         <input type="text" id="p9box13" class="typeable" style="left:454px; top:378px; width:65px; height:49px; text-align: center;" />
         <input type="text" id="p9box14" class="typeable" style="left:454px; top:433px; width:65px; height:49px; text-align: center;" />
-        <!-- Column 4 -->
         <input type="text" id="p9box15" class="typeable" style="left:541px; top:269px; width:65px; height:48px; text-align: center;" />
         <input type="text" id="p9box16" class="typeable" style="left:541px; top:323px; width:65px; height:49px; text-align: center;" />
         <input type="text" id="p9box17" class="typeable" style="left:541px; top:378px; width:65px; height:49px; text-align: center;" />
         <input type="text" id="p9box18" class="typeable" style="left:541px; top:433px; width:65px; height:49px; text-align: center;" />
       </div>
       
-      <!-- Page 10 with background 2-10.jpg (same as Page 9 content) -->
+      <!-- Page 10 with background 2-10.jpg -->
       <div id="page10" class="page" style="background: url('https://daryeaye.github.io/gt2/2-10.jpg') no-repeat center/cover;">
-        <!-- Big square: clickable link -->
         <a href="https://www.geogebra.org/m/wzjqwpbj" target="_blank">
           <div class="box transparent" style="left:740px; top:73px; width:190px; height:192px;"></div>
         </a>
-        <!-- Gif display -->
         <div class="box transparent" style="left:711px; top:358px; width:210px; height:133px;">
           <img src="https://daryeaye.github.io/gt2/triangleinequality.gif" style="width:100%; height:100%;" alt="Triangle Inequality">
         </div>
-        <!-- Column 1 -->
         <input type="text" id="p10box3" class="typeable" style="left:48px; top:269px; width:173px; height:48px; text-align: center;" />
         <input type="text" id="p10box4" class="typeable" style="left:48px; top:323px; width:173px; height:49px; text-align: center;" />
         <input type="text" id="p10box5" class="typeable" style="left:48px; top:378px; width:173px; height:49px; text-align: center;" />
         <input type="text" id="p10box6" class="typeable" style="left:48px; top:433px; width:173px; height:49px; text-align: center;" />
-        <!-- Column 2 -->
         <input type="text" id="p10box7" class="typeable" style="left:256px; top:269px; width:135px; height:48px; text-align: center;" />
         <input type="text" id="p10box8" class="typeable" style="left:256px; top:323px; width:135px; height:49px; text-align: center;" />
         <input type="text" id="p10box9" class="typeable" style="left:256px; top:378px; width:135px; height:49px; text-align: center;" />
         <input type="text" id="p10box10" class="typeable" style="left:256px; top:433px; width:135px; height:49px; text-align: center;" />
-        <!-- Column 3 -->
         <input type="text" id="p10box11" class="typeable" style="left:454px; top:269px; width:65px; height:48px; text-align: center;" />
         <input type="text" id="p10box12" class="typeable" style="left:454px; top:323px; width:65px; height:49px; text-align: center;" />
         <input type="text" id="p10box13" class="typeable" style="left:454px; top:378px; width:65px; height:49px; text-align: center;" />
         <input type="text" id="p10box14" class="typeable" style="left:454px; top:433px; width:65px; height:49px; text-align: center;" />
-        <!-- Column 4 -->
         <input type="text" id="p10box15" class="typeable" style="left:541px; top:269px; width:65px; height:48px; text-align: center;" />
         <input type="text" id="p10box16" class="typeable" style="left:541px; top:323px; width:65px; height:49px; text-align: center;" />
         <input type="text" id="p10box17" class="typeable" style="left:541px; top:378px; width:65px; height:49px; text-align: center;" />
         <input type="text" id="p10box18" class="typeable" style="left:541px; top:433px; width:65px; height:49px; text-align: center;" />
       </div>
       
-      <!-- Page 11 with background 2-11.jpg: 4 draggable boxes with names -->
+      <!-- Page 11 with background 2-11.jpg: Draggable boxes -->
       <div id="page11" class="page" style="background: url('https://daryeaye.github.io/gt2/2-11.jpg') no-repeat center/cover;">
         <div id="draggable1" class="draggable draggable-box" style="left:783px; top:135px; width:128px; height:52px;">
           Third
@@ -258,34 +258,26 @@
         </div>
       </div>
       
-      <!-- Page 12 with background 2-12.jpg: 4 typeable boxes with specific answers -->
+      <!-- Page 12 with background 2-12.jpg: Typeable boxes -->
       <div id="page12" class="page" style="background: url('https://daryeaye.github.io/gt2/2-12.jpg') no-repeat center/cover;">
-        <!-- Box 1: Answer must be "yes" -->
         <input type="text" id="p12box1" class="typeable" style="left:24px; top:125px; width:563px; height:44px; text-align: center;" />
-        <!-- Box 2: Answer must be "no" -->
         <input type="text" id="p12box2" class="typeable" style="left:25px; top:220px; width:563px; height:43px; text-align: center;" />
-        <!-- Box 3: Answer must be "no" -->
         <input type="text" id="p12box3" class="typeable" style="left:25px; top:322px; width:563px; height:44px; text-align: center;" />
-        <!-- Box 4: Answer must be "yes" -->
         <input type="text" id="p12box4" class="typeable" style="left:24px; top:413px; width:563px; height:44px; text-align: center;" />
       </div>
       
-      <!-- Page 13 with background 2-13.jpg: Multiple typeable boxes with specific answers -->
+      <!-- Page 13 with background 2-13.jpg: Typeable boxes -->
       <div id="page13" class="page" style="background: url('https://daryeaye.github.io/gt2/2-13.jpg') no-repeat center/cover;">
-        <!-- Top large typeable box -->
         <input type="text" id="p13top" class="typeable" style="left:344px; top:168px; width:579px; height:60px; text-align: center;" />
-        <!-- Top row of small boxes -->
         <input type="text" id="p13box1" class="typeable" style="left:695px; top:253px; width:89px; height:64px; text-align: center;" />
         <input type="text" id="p13box2" class="typeable" style="left:799px; top:253px; width:89px; height:64px; text-align: center;" />
-        <!-- Bottom row of small boxes -->
         <input type="text" id="p13box3" class="typeable" style="left:644px; top:328px; width:89px; height:65px; text-align: center;" />
         <input type="text" id="p13box4" class="typeable" style="left:747px; top:328px; width:89px; height:65px; text-align: center;" />
         <input type="text" id="p13box5" class="typeable" style="left:850px; top:328px; width:89px; height:65px; text-align: center;" />
       </div>
       
-      <!-- Page 14 with background 2-14.jpg: Top row (9 boxes) and Bottom row (3 boxes) -->
+      <!-- Page 14 with background 2-14.jpg: Typeable boxes -->
       <div id="page14" class="page" style="background: url('https://daryeaye.github.io/gt2/2-14.jpg') no-repeat center/cover;">
-         <!-- Top row: 9 boxes (blue boxes now transparent) -->
          <input type="text" id="p14box1" class="typeable" style="position: absolute; left:10px; top:138px; width:89px; height:64px; text-align: center; background-color: transparent;" />
          <input type="text" id="p14box2" class="typeable" style="position: absolute; left:117px; top:138px; width:88px; height:64px; text-align: center; background-color: transparent;" />
          <input type="text" id="p14box3" class="typeable" style="position: absolute; left:223px; top:138px; width:89px; height:64px; text-align: center; background-color: transparent;" />
@@ -295,15 +287,13 @@
          <input type="text" id="p14box7" class="typeable" style="position: absolute; left:648px; top:138px; width:89px; height:64px; text-align: center; background-color: transparent;" />
          <input type="text" id="p14box8" class="typeable" style="position: absolute; left:755px; top:138px; width:88px; height:64px; text-align: center; background-color: transparent;" />
          <input type="text" id="p14box9" class="typeable" style="position: absolute; left:861px; top:138px; width:89px; height:64px; text-align: center; background-color: transparent;" />
-         <!-- Bottom row: 3 boxes -->
          <input type="text" id="p14box10" class="typeable" style="position: absolute; left:159px; top:284px; width:94px; height:47px; text-align: center;" />
          <input type="text" id="p14box11" class="typeable" style="position: absolute; left:568px; top:284px; width:75px; height:47px; text-align: center;" />
          <input type="text" id="p14box12" class="typeable" style="position: absolute; left:695px; top:284px; width:142px; height:47px; text-align: center;" />
       </div>
       
-      <!-- Page 15 with background 2-15.jpg: Top row (11 small boxes) and Bottom (wide yellow box with Unlock button) -->
+      <!-- Page 15 with background 2-15.jpg: Typeable boxes and unlock button -->
       <div id="page15" class="page" style="background: url('https://daryeaye.github.io/gt2/2-15.jpg') no-repeat center/cover;">
-         <!-- Top row: 11 boxes -->
          <input type="text" id="p15box1" class="typeable" style="position: absolute; left:390px; top:216px; width:38px; height:57px; text-align: center;" />
          <input type="text" id="p15box2" class="typeable" style="position: absolute; left:438px; top:216px; width:38px; height:57px; text-align: center;" />
          <input type="text" id="p15box3" class="typeable" style="position: absolute; left:486px; top:216px; width:38px; height:57px; text-align: center;" />
@@ -315,9 +305,7 @@
          <input type="text" id="p15box9" class="typeable" style="position: absolute; left:775px; top:216px; width:38px; height:57px; text-align: center;" />
          <input type="text" id="p15box10" class="typeable" style="position: absolute; left:823px; top:216px; width:38px; height:57px; text-align: center;" />
          <input type="text" id="p15box11" class="typeable" style="position: absolute; left:871px; top:216px; width:38px; height:57px; text-align: center;" />
-         <!-- Bottom wide yellow box -->
          <input type="text" id="p15yellow" class="typeable" style="position: absolute; left:509px; top:411px; width:281px; height:65px; text-align: center; background-color: #FFEB99;" />
-         <!-- Unlock button below the yellow box -->
          <button id="unlockBtn" style="position: absolute; left:509px; top:480px; width:281px; height:30px; text-align: center; font-family: 'Comic Sans MS', sans-serif; font-size: 16px;">Unlock</button>
       </div>
       
@@ -332,6 +320,13 @@
   <script>
     let currentPage = 1;
     const totalPages = 15;
+    let maxPageVisited = 1;
+    
+    function updateProgress() {
+      const progressPercent = (maxPageVisited / totalPages) * 100;
+      document.getElementById('progress').style.width = progressPercent + '%';
+      document.getElementById('progressText').innerText = progressPercent.toFixed(0) + '% completed';
+    }
     
     function showPage(pageNum) {
       for (let i = 1; i <= totalPages; i++) {
@@ -348,6 +343,7 @@
         document.getElementById("prev-btn").style.display = "inline-block";
         document.getElementById("next-btn").style.display = "inline-block";
       }
+      updateProgress();
     }
     
     function nextPage() {
@@ -421,6 +417,9 @@
       
       if (currentPage < totalPages) {
         currentPage++;
+        if (currentPage > maxPageVisited) {
+          maxPageVisited = currentPage;
+        }
         showPage(currentPage);
       }
     }
@@ -465,12 +464,31 @@
       };
     }
     
+    function confirmName() {
+      const nameInput = document.getElementById("username");
+      const name = nameInput.value.trim();
+      if (name !== "") {
+        localStorage.setItem("username", name);
+        nameInput.disabled = true;
+        alert("Name confirmed as: " + name);
+      } else {
+        alert("Please enter a name.");
+      }
+    }
+    
     document.addEventListener("DOMContentLoaded", function() {
       showPage(currentPage);
       setupPersistence();
       document.querySelectorAll('.draggable').forEach(el => {
         makeDraggable(el);
       });
+      // Check for a stored username and disable input if found.
+      const storedName = localStorage.getItem("username");
+      const nameInput = document.getElementById("username");
+      if (storedName !== null && storedName !== "") {
+        nameInput.value = storedName;
+        nameInput.disabled = true;
+      }
       // Setup unlock button on Page 15.
       document.getElementById("unlockBtn").addEventListener("click", function(){
          let yellowInput = document.getElementById("p15yellow");
@@ -489,3 +507,4 @@
   </script>
 </body>
 </html>
+
