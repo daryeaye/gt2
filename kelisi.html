@@ -59,6 +59,18 @@
     .page.active {
       display: block;
     }
+    #header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    #translation-widget span {
+      vertical-align: middle;
+    }
+    #translation-widget a {
+      text-decoration: none;
+    }
     /* Style for clickable boxes */
     .box {
       position: absolute;
@@ -110,14 +122,25 @@
 <body>
   <div id="app-container">
     <!-- Added Header for Name Input and Progress Bar -->
-    <div id="header">
-      <input type="text" id="username" placeholder="Enter your name" style="font-size:16px; padding:5px;" />
-      <button id="confirmBtn" onclick="confirmName()">Confirm</button>
+   <div id="header">
+      <div id="header-top">
+        <div>
+          <input type="text" id="username" placeholder="Enter your name" style="font-size:16px; padding:5px;" />
+          <button id="confirmBtn" onclick="confirmName()">Confirm</button>
+        </div>
+        <div id="translation-widget">
+          <span style="font-size: 18px;">Need translation?</span>
+          <span style="font-size: 22px; margin-left: 10px;">
+            <a href="https://drive.google.com/file/d/1XnUcb5crKUtUYomJDwkOElGy30PyjRYS/view?usp=drive_link" target="_blank">Open me!</a>
+          </span>
+        </div>
+      </div>
       <div id="progressBar">
         <div id="progress"></div>
       </div>
       <span id="progressText">0% completed</span>
     </div>
+
     
     <div id="container">
       <!-- Page 1 with PDF links and background image 2-01.jpg -->
