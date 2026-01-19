@@ -1,1 +1,829 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Lost Treasure Pt2 Mrs James</title><link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet"><style>body,html{margin:0;padding:0;height:100vh;display:flex;justify-content:center;align-items:center;background:url('https://daryeaye.github.io/geotopia/thatsit.png') no-repeat center center fixed;background-size:cover}#app-container{display:flex;flex-direction:column;align-items:center}#header{width:960px;background:#eee;padding:10px;margin-bottom:10px}#progressBar{width:100%;background:#ccc;height:20px;margin-top:10px}#progress{width:0%;background:green;height:100%}#container{position:relative;width:960px;height:540px;border:1px solid #ccc;background:white;overflow:hidden}.page{position:absolute;top:0;left:0;width:960px;height:540px;display:none}.page.active{display:block}#header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}#translation-widget span{vertical-align:middle}#translation-widget a{text-decoration:none}.box{position:absolute;border:1px solid red;background-color:rgba(255,0,0,0.3)}.transparent{background-color:transparent!important}input.typeable{position:absolute;font-family:"Comic Sans MS",sans-serif;font-size:22px;border:1px solid black;background:rgba(173,216,230,0.5)}.draggable-box{position:absolute;font-family:'Caveat',cursive;font-size:40px;font-weight:bold;text-align:center;display:flex;justify-content:center;align-items:center;border:1px solid red;background-color:rgba(255,255,255,0.7);cursor:move;user-select:none}#nav-buttons{margin-top:10px}button{font-family:"Comic Sans MS",sans-serif;font-size:20px;background-color:lightblue;border:none;padding:10px 20px;margin:0 5px;cursor:pointer}</style><style>#side-widget{position:fixed;top:20px;right:20px;width:200px;height:200px;background:#f9f9f9;border:1px solid #ccc;padding:10px;box-sizing:border-box;font-family:'Caveat',cursive;z-index:999}#side-widget p.title{font-size:24px;text-align:center;margin:0 0 10px}#side-widget button,#side-widget a{display:block;margin:0 auto;font-size:20px;cursor:pointer;text-align:center;background:lightblue;border:none;padding:10px;text-decoration:none;color:inherit}#selection-overlay{position:fixed;top:0;left:0;width:100%;height:100%;cursor:crosshair;z-index:1000}#selection-box{position:absolute;border:2px dashed red;background:rgba(0,0,0,0.1)}</style><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script></head><body><div id="app-container"><div id="header"><div id="header-top"><div><input type="text" id="username" placeholder="Enter your name" style="font-size:16px; padding:5px;" /><button id="confirmBtn" onclick="confirmName()">Confirm</button></div></div><div id="progressBar"><div id="progress"></div></div><span id="progressText">0% completed</span></div><div id="container"><div id="page1" class="page active" style="background:url('https://daryeaye.github.io/gt2/2-01.jpg') no-repeat center/cover;"><a href="https://daryeaye.github.io/geotopia/GT1%20Officer+.pdf" target="_blank"><div class="box transparent" style="left:10px; top:366px; width:130px; height:114px;"></div></a><a href="https://daryeaye.github.io/geotopia/GT1%20Professor+.pdf" target="_blank"><div class="box transparent" style="left:149px; top:366px; width:130px; height:114px;"></div></a><a href="https://daryeaye.github.io/geotopia/GT1%20Hacker+.pdf" target="_blank"><div class="box transparent" style="left:288px; top:366px; width:130px; height:114px;"></div></a><a href="https://www.youtube.com/watch?v=Fj98o3aFfk8" target="_blank" style="position:absolute; left:134px; top:490px; width:177px; height:32px; background-color:rgba(128,128,128,0.9); font-family:'Caveat',cursive;font-size:22px;display:flex;align-items:center;justify-content:center;text-decoration:none;color:white;">What is the role for?</a></div><div id="page2" class="page" style="background:url('https://daryeaye.github.io/gt2/2-02.jpg') no-repeat center/cover;"></div><div id="page3" class="page" style="background:url('https://daryeaye.github.io/gt2/2-03.jpg') no-repeat center/cover;"><a href="https://www.geogebra.org/m/nrmkmuvz" target="_blank"><div class="box transparent" style="left:115px; top:59px; width:189px; height:180px;"></div></a><a href="https://www.geogebra.org/m/wzjqwpbj" target="_blank"><div class="box transparent" style="left:115px; top:314px; width:189px; height:192px;"></div></a></div><div id="page4" class="page" style="background:url('https://daryeaye.github.io/gt2/2-04.jpg') no-repeat center/cover;"><a href="https://www.geogebra.org/m/nrmkmuvz" target="_blank"><div class="box transparent" style="left:702px; top:162px; width:190px; height:181px;"></div></a><input type="text" id="p4box1" class="typeable" style="left:289px; top:414px; width:92px; height:46px; text-align:center;" /></div><div id="page5" class="page" style="background:url('https://daryeaye.github.io/gt2/2-05.jpg') no-repeat center/cover;"><a href="https://www.geogebra.org/m/nrmkmuvz" target="_blank"><div class="box transparent" style="left:702px; top:162px; width:190px; height:181px;"></div></a><input type="text" id="middleTopInput" class="typeable" style="left:486px; top:252px; width:92px; height:46px; text-align:center;" /><input type="text" id="middleBottomInput" class="typeable" style="left:479px; top:320px; width:91px; height:47px; text-align:center;" /><input type="text" id="bottomInput" class="typeable" style="left:45px; top:433px; width:622px; height:87px; text-align:left;" /></div><div id="page6" class="page" style="background:url('https://daryeaye.github.io/gt2/2-06.jpg') no-repeat center/cover;"><a href="https://www.geogebra.org/m/nrmkmuvz" target="_blank"><div class="box transparent" style="left:702px; top:162px; width:190px; height:181px;"></div></a><input type="text" id="page6MiddleInput" class="typeable" style="left:473px; top:314px; width:92px; height:46px; text-align:center;" /><input type="text" id="page6BottomInput" class="typeable" style="left:45px; top:427px; width:622px; height:87px; text-align:left;" /></div><div id="page7" class="page" style="background:url('https://daryeaye.github.io/gt2/2-07.jpg') no-repeat center/cover;"></div><div id="page8" class="page" style="background:url('https://daryeaye.github.io/gt2/2-08.jpg') no-repeat center/cover;"><input type="text" id="page8TopRightInput" class="typeable" style="left:621px; top:75px; width:96px; height:49px; text-align:center;" /><input type="text" id="page8TopMiddleInput" class="typeable" style="left:432px; top:75px; width:96px; height:49px; text-align:center;" /><input type="text" id="page8TopLeftInput" class="typeable" style="left:243px; top:75px; width:96px; height:49px; text-align:center;" /><a href="https://www.geogebra.org/m/wzjqwpbj" target="_blank"><div class="box transparent" style="left:41px; top:161px; width:190px; height:192px;"></div></a><input type="text" id="page8ExtraInput" class="typeable" style="left:772px; top:233px; width:146px; height:49px; text-align:center;" /><div class="box transparent" style="left:460px; top:299px; width:209px; height:133px; background-color:#FFEB99;"><img src="https://daryeaye.github.io/gt2/triangleinequality.gif" style="width:100%; height:100%;" alt="Triangle Inequality"></div></div><div id="page9" class="page" style="background:url('https://daryeaye.github.io/gt2/2-09.jpg') no-repeat center/cover;"><a href="https://www.geogebra.org/m/wzjqwpbj" target="_blank"><div class="box transparent" style="left:740px; top:73px; width:190px; height:192px;"></div></a><div class="box transparent" style="left:711px; top:358px; width:210px; height:133px;"><img src="https://daryeaye.github.io/gt2/triangleinequality.gif" style="width:100%; height:100%;" alt="Triangle Inequality"></div><input type="text" id="p9box3" class="typeable" style="left:48px; top:269px; width:173px; height:48px; text-align:center;" /><input type="text" id="p9box4" class="typeable" style="left:48px; top:323px; width:173px; height:49px; text-align:center;" /><input type="text" id="p9box5" class="typeable" style="left:48px; top:378px; width:173px; height:49px; text-align:center;" /><input type="text" id="p9box6" class="typeable" style="left:48px; top:433px; width:173px; height:49px; text-align:center;" /><input type="text" id="p9box7" class="typeable" style="left:256px; top:269px; width:135px; height:48px; text-align:center;" /><input type="text" id="p9box8" class="typeable" style="left:256px; top:323px; width:135px; height:49px; text-align:center;" /><input type="text" id="p9box9" class="typeable" style="left:256px; top:378px; width:135px; height:49px; text-align:center;" /><input type="text" id="p9box10" class="typeable" style="left:256px; top:433px; width:135px; height:49px; text-align:center;" /><input type="text" id="p9box11" class="typeable" style="left:454px; top:269px; width:65px; height:48px; text-align:center;" /><input type="text" id="p9box12" class="typeable" style="left:454px; top:323px; width:65px; height:49px; text-align:center;" /><input type="text" id="p9box13" class="typeable" style="left:454px; top:378px; width:65px; height:49px; text-align:center;" /><input type="text" id="p9box14" class="typeable" style="left:454px; top:433px; width:65px; height:49px; text-align:center;" /><input type="text" id="p9box15" class="typeable" style="left:541px; top:269px; width:65px; height:48px; text-align:center;" /><input type="text" id="p9box16" class="typeable" style="left:541px; top:323px; width:65px; height:49px; text-align:center;" /><input type="text" id="p9box17" class="typeable" style="left:541px; top:378px; width:65px; height:49px; text-align:center;" /><input type="text" id="p9box18" class="typeable" style="left:541px; top:433px; width:65px; height:49px; text-align:center;" /></div><div id="page10" class="page" style="background:url('https://daryeaye.github.io/gt2/2-10.jpg') no-repeat center/cover;"><a href="https://www.geogebra.org/m/wzjqwpbj" target="_blank"><div class="box transparent" style="left:740px; top:73px; width:190px; height:192px;"></div></a><div class="box transparent" style="left:711px; top:358px; width:210px; height:133px;"><img src="https://daryeaye.github.io/gt2/triangleinequality.gif" style="width:100%; height:100%;" alt="Triangle Inequality"></div><input type="text" id="p10box3" class="typeable" style="left:48px; top:269px; width:173px; height:48px; text-align:center;" /><input type="text" id="p10box4" class="typeable" style="left:48px; top:323px; width:173px; height:49px; text-align:center;" /><input type="text" id="p10box5" class="typeable" style="left:48px; top:378px; width:173px; height:49px; text-align:center;" /><input type="text" id="p10box6" class="typeable" style="left:48px; top:433px; width:173px; height:49px; text-align:center;" /><input type="text" id="p10box7" class="typeable" style="left:256px; top:269px; width:135px; height:48px; text-align:center;" /><input type="text" id="p10box8" class="typeable" style="left:256px; top:323px; width:135px; height:49px; text-align:center;" /><input type="text" id="p10box9" class="typeable" style="left:256px; top:378px; width:135px; height:49px; text-align:center;" /><input type="text" id="p10box10" class="typeable" style="left:256px; top:433px; width:135px; height:49px; text-align:center;" /><input type="text" id="p10box11" class="typeable" style="left:454px; top:269px; width:65px; height:48px; text-align:center;" /><input type="text" id="p10box12" class="typeable" style="left:454px; top:323px; width:65px; height:49px; text-align:center;" /><input type="text" id="p10box13" class="typeable" style="left:454px; top:378px; width:65px; height:49px; text-align:center;" /><input type="text" id="p10box14" class="typeable" style="left:454px; top:433px; width:65px; height:49px; text-align:center;" /><input type="text" id="p10box15" class="typeable" style="left:541px; top:269px; width:65px; height:48px; text-align:center;" /><input type="text" id="p10box16" class="typeable" style="left:541px; top:323px; width:65px; height:49px; text-align:center;" /><input type="text" id="p10box17" class="typeable" style="left:541px; top:378px; width:65px; height:49px; text-align:center;" /><input type="text" id="p10box18" class="typeable" style="left:541px; top:433px; width:65px; height:49px; text-align:center;" /></div><div id="page11" class="page" style="background:url('https://daryeaye.github.io/gt2/2-11.jpg') no-repeat center/cover;"><div id="draggable1" class="draggable draggable-box" style="left:783px; top:135px; width:128px; height:52px;">Third</div><div id="draggable2" class="draggable draggable-box" style="left:766px; top:194px; width:162px; height:59px;">Smaller</div><div id="draggable3" class="draggable draggable-box" style="left:802px; top:260px; width:91px; height:61px;">Sum</div><div id="draggable4" class="draggable draggable-box" style="left:764px; top:337px; width:167px; height:50px;">Greater</div></div><div id="page12" class="page" style="background:url('https://daryeaye.github.io/gt2/2-12.jpg') no-repeat center/cover;"><input type="text" id="p12box1" class="typeable" style="left:24px; top:125px; width:563px; height:44px; text-align:center;" /><input type="text" id="p12box2" class="typeable" style="left:25px; top:220px; width:563px; height:43px; text-align:center;" /><input type="text" id="p12box3" class="typeable" style="left:25px; top:322px; width:563px; height:44px; text-align:center;" /><input type="text" id="p12box4" class="typeable" style="left:24px; top:413px; width:563px; height:44px; text-align:center;" /></div><div id="page13" class="page" style="background:url('https://daryeaye.github.io/gt2/2-13.jpg') no-repeat center/cover;"><input type="text" id="p13top" class="typeable" style="left:344px; top:168px; width:579px; height:60px; text-align:center;" /><input type="text" id="p13box1" class="typeable" style="left:695px; top:253px; width:89px; height:64px; text-align:center;" /><input type="text" id="p13box2" class="typeable" style="left:799px; top:253px; width:89px; height:64px; text-align:center;" /><input type="text" id="p13box3" class="typeable" style="left:644px; top:328px; width:89px; height:65px; text-align:center;" /><input type="text" id="p13box4" class="typeable" style="left:747px; top:328px; width:89px; height:65px; text-align:center;" /><input type="text" id="p13box5" class="typeable" style="left:850px; top:328px; width:89px; height:65px; text-align:center;" /></div><div id="page14" class="page" style="background:url('https://daryeaye.github.io/gt2/2-14.jpg') no-repeat center/cover;"><input type="text" id="p14box1" class="typeable" style="position:absolute; left:10px; top:138px; width:89px; height:64px; text-align:center; background-color:transparent;" /><input type="text" id="p14box2" class="typeable" style="position:absolute; left:117px; top:138px; width:88px; height:64px; text-align:center; background-color:transparent;" /><input type="text" id="p14box3" class="typeable" style="position:absolute; left:223px; top:138px; width:89px; height:64px; text-align:center; background-color:transparent;" /><input type="text" id="p14box4" class="typeable" style="position:absolute; left:329px; top:138px; width:89px; height:64px; text-align:center; background-color:transparent;" /><input type="text" id="p14box5" class="typeable" style="position:absolute; left:436px; top:138px; width:88px; height:64px; text-align:center; background-color:transparent;" /><input type="text" id="p14box6" class="typeable" style="position:absolute; left:542px; top:138px; width:89px; height:64px; text-align:center; background-color:transparent;" /><input type="text" id="p14box7" class="typeable" style="position:absolute; left:648px; top:138px; width:89px; height:64px; text-align:center; background-color:transparent;" /><input type="text" id="p14box8" class="typeable" style="position:absolute; left:755px; top:138px; width:88px; height:64px; text-align:center; background-color:transparent;" /><input type="text" id="p14box9" class="typeable" style="position:absolute; left:861px; top:138px; width:89px; height:64px; text-align:center; background-color:transparent;" /><input type="text" id="p14box10" class="typeable" style="position:absolute; left:159px; top:284px; width:94px; height:47px; text-align:center;" /><input type="text" id="p14box11" class="typeable" style="position:absolute; left:568px; top:284px; width:75px; height:47px; text-align:center;" /><input type="text" id="p14box12" class="typeable" style="position:absolute; left:695px; top:284px; width:142px; height:47px; text-align:center;" /></div><div id="page15" class="page" style="background:url('https://daryeaye.github.io/gt2/2-15.jpg') no-repeat center/cover;"><input type="text" id="p15box1" class="typeable" style="position:absolute; left:390px; top:216px; width:38px; height:57px; text-align:center;" /><input type="text" id="p15box2" class="typeable" style="position:absolute; left:438px; top:216px; width:38px; height:57px; text-align:center;" /><input type="text" id="p15box3" class="typeable" style="position:absolute; left:486px; top:216px; width:38px; height:57px; text-align:center;" /><input type="text" id="p15box4" class="typeable" style="position:absolute; left:534px; top:216px; width:38px; height:57px; text-align:center;" /><input type="text" id="p15box5" class="typeable" style="position:absolute; left:582px; top:216px; width:38px; height:57px; text-align:center;" /><input type="text" id="p15box6" class="typeable" style="position:absolute; left:630px; top:216px; width:38px; height:57px; text-align:center;" /><input type="text" id="p15box7" class="typeable" style="position:absolute; left:678px; top:216px; width:38px; height:57px; text-align:center;" /><input type="text" id="p15box8" class="typeable" style="position:absolute; left:726px; top:216px; width:39px; height:57px; text-align:center;" /><input type="text" id="p15box9" class="typeable" style="position:absolute; left:775px; top:216px; width:38px; height:57px; text-align:center;" /><input type="text" id="p15box10" class="typeable" style="position:absolute; left:823px; top:216px; width:38px; height:57px; text-align:center;" /><input type="text" id="p15box11" class="typeable" style="position:absolute; left:871px; top:216px; width:38px; height:57px; text-align:center;" /><input type="text" id="p15yellow" class="typeable" style="position:absolute; left:509px; top:411px; width:281px; height:65px; text-align:center; background-color:#FFEB99;" /><button id="unlockBtn" style="position:absolute; left:509px; top:480px; width:281px; height:30px; text-align:center; font-family:'Comic Sans MS',sans-serif; font-size:16px;">Unlock</button></div></div><div id="nav-buttons"><button id="prev-btn" onclick="prevPage()">Previous</button><button id="next-btn" onclick="nextPage()">Next</button></div></div><script>let currentPage=1,totalPages=15,maxPageVisited=1;function updateProgress(){const p=(maxPageVisited/totalPages)*100;document.getElementById("progress").style.width=p+"%";document.getElementById("progressText").innerText=p.toFixed(0)+"% completed"}function showPage(p){for(let i=1;i<=totalPages;i++)document.getElementById("page"+i).classList.remove("active");document.getElementById("page"+p).classList.add("active");if(p===1){document.getElementById("prev-btn").style.display="none";document.getElementById("next-btn").style.display="inline-block"}else if(p===totalPages){document.getElementById("prev-btn").style.display="inline-block";document.getElementById("next-btn").style.display="none"}else{document.getElementById("prev-btn").style.display="inline-block";document.getElementById("next-btn").style.display="inline-block"}updateProgress()}function nextPage(){if(currentPage===5){const t=document.getElementById("middleTopInput").value.trim().toLowerCase(),b=document.getElementById("middleBottomInput").value.trim().toLowerCase();if(t!=="45"||b!=="45"){alert("❌ Nah. Mrs. James needs you to be more careful!");return}}if(currentPage===6){const v=document.getElementById("page6MiddleInput").value.trim().toLowerCase();if(v!=="30"){alert("❌ Nah. Mrs. James needs you to be more careful!");return}}if(currentPage===9||currentPage===10){const ids=currentPage===9?["p9box3","p9box4","p9box5","p9box6","p9box7","p9box8","p9box9","p9box10","p9box11","p9box12","p9box13","p9box14","p9box15","p9box16","p9box17","p9box18"]:["p10box3","p10box4","p10box5","p10box6","p10box7","p10box8","p10box9","p10box10","p10box11","p10box12","p10box13","p10box14","p10box15","p10box16","p10box17","p10box18"];for(let id of ids){if(document.getElementById(id).value.trim()===""){alert("❌ Nah. Mrs. James needs you to be more careful!");return}}}if(currentPage===12){if(document.getElementById("p12box1").value.trim().toLowerCase()!=="yes"||document.getElementById("p12box2").value.trim().toLowerCase()!=="no"||document.getElementById("p12box3").value.trim().toLowerCase()!=="no"||document.getElementById("p12box4").value.trim().toLowerCase()!=="yes"){alert("❌ Nah. Mrs. James needs you to be more careful!");return}}if(currentPage===13){if(document.getElementById("p13box1").value.trim().toLowerCase()!=="3"||document.getElementById("p13box2").value.trim().toLowerCase()!=="4"||document.getElementById("p13box3").value.trim().toLowerCase()!=="5"||document.getElementById("p13box4").value.trim().toLowerCase()!=="6"||document.getElementById("p13box5").value.trim().toLowerCase()!=="7"){alert("❌ Nah. Mrs. James needs you to be more careful!");return}}if(currentPage===14){if(document.getElementById("p14box1").value.trim().toLowerCase()!=="1"||document.getElementById("p14box9").value.trim().toLowerCase()!=="9"||document.getElementById("p14box10").value.trim().toLowerCase()!=="third"||document.getElementById("p14box11").value.trim().toLowerCase()!=="sum"||document.getElementById("p14box12").value.trim().toLowerCase()!=="difference"){alert("❌ Nah. Mrs. James needs you to be more careful!");return}}if(currentPage<totalPages){currentPage++;if(currentPage>maxPageVisited)maxPageVisited=currentPage;showPage(currentPage)}}function prevPage(){if(currentPage>1){currentPage--;showPage(currentPage)}}function setupPersistence(){const inp=document.querySelectorAll("input.typeable");inp.forEach(el=>{const key=el.id,stored=localStorage.getItem(key);if(stored!==null)el.value=stored;el.addEventListener("input",()=>{localStorage.setItem(key,el.value)})})}function makeDraggable(el){el.onmousedown=function(e){e.preventDefault();let ox=e.clientX-parseInt(window.getComputedStyle(el).left),oy=e.clientY-parseInt(window.getComputedStyle(el).top);function moveH(e){el.style.left=(e.clientX-ox)+"px";el.style.top=(e.clientY-oy)+"px"}function upH(){document.removeEventListener("mousemove",moveH);document.removeEventListener("mouseup",upH)}document.addEventListener("mousemove",moveH);document.addEventListener("mouseup",upH)}}function confirmName(){const ni=document.getElementById("username"),name=ni.value.trim();if(name!==""){localStorage.setItem("username",name);ni.disabled=true;alert("Name confirmed as: "+name)}else alert("Please enter a name.")}document.addEventListener("DOMContentLoaded",function(){showPage(currentPage);setupPersistence();document.querySelectorAll(".draggable").forEach(el=>{makeDraggable(el)});const sn=localStorage.getItem("username"),ni=document.getElementById("username");if(sn!==null&&sn!==""){ni.value=sn;ni.disabled=true}document.getElementById("unlockBtn").addEventListener("click",function(){let yi=document.getElementById("p15yellow"),val=yi.value.trim().toLowerCase();if(val==="121"){alert("✅Great job! Ask the merchant for the rest of the code.")}else if(val==="121ja"){window.open("https://daryeaye.github.io/geotopia/batele.pdf","_blank");yi.value="";localStorage.setItem("p15yellow","")}else{alert("❌ Nah. Mrs. James needs you to be more careful!")}})});</script><div id="side-widget"><p class="title">Need translation?</p><button id="select-text">Select Text</button><p><a href="https://translate.google.com/?sl=en&tl=es&op=images" target="_blank">Click me and paste from clipboard</a></p></div><script>document.getElementById("select-text").addEventListener("click",function(){const o=document.createElement("div");o.id="selection-overlay";document.body.appendChild(o);let sX,sY,sB;o.addEventListener("mousedown",function(e){sX=e.clientX;sY=e.clientY;sB=document.createElement("div");sB.id="selection-box";sB.style.left=sX+"px";sB.style.top=sY+"px";sB.style.width="0px";sB.style.height="0px";o.appendChild(sB);function mH(e){const cX=e.clientX,cY=e.clientY,l=Math.min(sX,cX),t=Math.min(sY,cY),w=Math.abs(cX-sX),h=Math.abs(cY-sY);sB.style.left=l+"px";sB.style.top=t+"px";sB.style.width=w+"px";sB.style.height=h+"px"}function uH(e){o.removeEventListener("mousemove",mH);o.removeEventListener("mouseup",uH);const r=sB.getBoundingClientRect();document.body.removeChild(o);const T=document.getElementById("container"),TR=T.getBoundingClientRect();html2canvas(T,{useCORS:true,allowTaint:false}).then(canvas=>{const sf=canvas.width/TR.width,sx=(r.left-TR.left)*sf,sy=(r.top-TR.top)*sf,sw=r.width*sf,sh=r.height*sf,cc=document.createElement("canvas");cc.width=sw;cc.height=sh;const ctx=cc.getContext("2d");ctx.drawImage(canvas,sx,sy,sw,sh,0,0,sw,sh);cc.toBlob(blob=>{if(blob){const itm=new ClipboardItem({"image/png":blob});navigator.clipboard.write([itm]).then(()=>{alert("Screenshot copied to clipboard.")}).catch(err=>{console.error("Failed to copy screenshot to clipboard",err);alert("Failed to copy screenshot to clipboard.")})}})})}o.addEventListener("mousemove",mH);o.addEventListener("mouseup",uH)})});<!-- @XDY. All rights reserved. This code is the intellectual property of XDY. Unauthorized copying, reproduction, or redistribution is strictly prohibited. For educational use only. Contact the author for permissions. --></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lost Treasure Pt2 Mrs James</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <!-- PDF.js (Google Sites-safe PDF rendering) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      overflow-y: auto;
+      background: url('https://daryeaye.github.io/geotopia/thatsit.png') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 10px 0 40px;
+      box-sizing: border-box;
+    }
+
+    #app-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    /* Sticky header so progress bar is always visible */
+    #header {
+      width: 960px;
+      background: #eee;
+      padding: 10px;
+      margin-bottom: 10px;
+
+      position: sticky;
+      top: 0;
+      z-index: 2000;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    }
+
+    #header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    #progressBar {
+      width: 100%;
+      background: #ccc;
+      height: 20px;
+      margin-top: 10px;
+    }
+
+    #progress {
+      width: 0%;
+      background: green;
+      height: 100%;
+    }
+
+    #container-wrap {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* wrapper anchors nav buttons without shifting canvas */
+    #main-wrapper {
+      position: relative;
+      width: 960px;
+    }
+
+    #container {
+      position: relative;
+      width: 960px;
+      height: 540px;
+      border: 1px solid #ccc;
+      background: white;
+      overflow: hidden;
+    }
+
+    .page {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 960px;
+      height: 540px;
+      display: none;
+    }
+
+    .page.active { display: block; }
+
+    .box {
+      position: absolute;
+      border: 1px solid red;
+      background-color: rgba(255,0,0,0.3);
+    }
+
+    .transparent { background-color: transparent !important; }
+
+    input.typeable {
+      position: absolute;
+      font-family: "Comic Sans MS", sans-serif;
+      font-size: 22px;
+      border: 1px solid black;
+      background: rgba(173,216,230,0.5);
+    }
+
+    .draggable-box {
+      position: absolute;
+      font-family: 'Caveat', cursive;
+      font-size: 40px;
+      font-weight: bold;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid red;
+      background-color: rgba(255,255,255,0.7);
+      cursor: move;
+      user-select: none;
+    }
+
+    button {
+      font-family: "Comic Sans MS", sans-serif;
+      font-size: 20px;
+      background-color: lightblue;
+      border: none;
+      padding: 10px 20px;
+      margin: 0 5px;
+      cursor: pointer;
+    }
+
+    /* Prev/Next: left side, vertically centered, close to canvas */
+    #nav-buttons {
+      position: absolute;
+      top: 50%;
+      left: -150px;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* ==============================
+       SECOND CANVAS (same size 960x540)
+       Role stage also 960x540 (no scaling)
+       ============================== */
+    #role-container {
+      position: relative;
+      width: 960px;
+      height: 540px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      margin-top: 10px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    #role-stage {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 960px;
+      height: 540px;
+      background: url('https://daryeaye.github.io/geotopia/role.jpg') no-repeat center/cover;
+    }
+
+    .role-hotspot {
+      position: absolute;
+      background: rgba(255,0,0,0);
+      border: none;
+      padding: 0;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    #pdfViewer {
+      position: absolute;
+      inset: 0;
+      display: none;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: #fff;
+      z-index: 5;
+    }
+
+    .pdfPageCanvas {
+      display: block;
+      margin: 12px auto;
+      background: white;
+    }
+
+    #pdfStatus {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-family: "Comic Sans MS", sans-serif;
+      font-size: 14px;
+      color: #111;
+      background: rgba(255,255,255,0.85);
+      padding: 6px 10px;
+      border: 1px solid rgba(0,0,0,0.15);
+      border-radius: 6px;
+      z-index: 10;
+      display: none;
+    }
+
+    /* hides role-stage (background + hotspots) once PDF is active */
+    #role-container.pdf-mode #role-stage { display: none; }
+
+    /* Translation widget (unchanged) */
+    #side-widget {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 200px;
+      height: 200px;
+      background: #f9f9f9;
+      border: 1px solid #ccc;
+      padding: 10px;
+      box-sizing: border-box;
+      font-family: 'Caveat', cursive;
+      z-index: 999;
+    }
+
+    #side-widget p.title {
+      font-size: 24px;
+      text-align: center;
+      margin: 0 0 10px;
+    }
+
+    #side-widget button, #side-widget a {
+      display: block;
+      margin: 0 auto;
+      font-size: 20px;
+      cursor: pointer;
+      text-align: center;
+      background: lightblue;
+      border: none;
+      padding: 10px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    #selection-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      cursor: crosshair;
+      z-index: 1000;
+    }
+
+    #selection-box {
+      position: absolute;
+      border: 2px dashed red;
+      background: rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app-container">
+    <div id="header">
+      <div id="header-top">
+        <div>
+          <input type="text" id="username" placeholder="Enter your name" style="font-size:16px; padding:5px;" />
+          <button id="confirmBtn" onclick="confirmName()">Confirm</button>
+        </div>
+      </div>
+
+      <div id="progressBar"><div id="progress"></div></div>
+      <span id="progressText">0% completed</span>
+    </div>
+
+    <div id="container-wrap">
+      <div id="main-wrapper">
+        <div id="nav-buttons">
+          <button id="prev-btn" onclick="prevPage()">Previous</button>
+          <button id="next-btn" onclick="nextPage()">Next</button>
+        </div>
+
+        <div id="container">
+          <!-- Page 1: role boxes removed + role-for button removed -->
+          <div id="page1" class="page active" style="background:url('https://daryeaye.github.io/gt2/2-01.jpg') no-repeat center/cover;"></div>
+
+          <div id="page2" class="page" style="background:url('https://daryeaye.github.io/gt2/2-02.jpg') no-repeat center/cover;"></div>
+
+          <div id="page3" class="page" style="background:url('https://daryeaye.github.io/gt2/2-03.jpg') no-repeat center/cover;">
+            <a href="https://www.geogebra.org/m/nrmkmuvz" target="_blank">
+              <div class="box transparent" style="left:115px; top:59px; width:189px; height:180px;"></div>
+            </a>
+            <a href="https://www.geogebra.org/m/wzjqwpbj" target="_blank">
+              <div class="box transparent" style="left:115px; top:314px; width:189px; height:192px;"></div>
+            </a>
+          </div>
+
+          <div id="page4" class="page" style="background:url('https://daryeaye.github.io/gt2/2-04.jpg') no-repeat center/cover;">
+            <a href="https://www.geogebra.org/m/nrmkmuvz" target="_blank">
+              <div class="box transparent" style="left:702px; top:162px; width:190px; height:181px;"></div>
+            </a>
+            <input type="text" id="p4box1" class="typeable" style="left:289px; top:414px; width:92px; height:46px; text-align:center;" />
+          </div>
+
+          <div id="page5" class="page" style="background:url('https://daryeaye.github.io/gt2/2-05.jpg') no-repeat center/cover;">
+            <a href="https://www.geogebra.org/m/nrmkmuvz" target="_blank">
+              <div class="box transparent" style="left:702px; top:162px; width:190px; height:181px;"></div>
+            </a>
+            <input type="text" id="middleTopInput" class="typeable" style="left:486px; top:252px; width:92px; height:46px; text-align:center;" />
+            <input type="text" id="middleBottomInput" class="typeable" style="left:479px; top:320px; width:91px; height:47px; text-align:center;" />
+            <input type="text" id="bottomInput" class="typeable" style="left:45px; top:433px; width:622px; height:87px; text-align:left;" />
+          </div>
+
+          <div id="page6" class="page" style="background:url('https://daryeaye.github.io/gt2/2-06.jpg') no-repeat center/cover;">
+            <a href="https://www.geogebra.org/m/nrmkmuvz" target="_blank">
+              <div class="box transparent" style="left:702px; top:162px; width:190px; height:181px;"></div>
+            </a>
+            <input type="text" id="page6MiddleInput" class="typeable" style="left:473px; top:314px; width:92px; height:46px; text-align:center;" />
+            <input type="text" id="page6BottomInput" class="typeable" style="left:45px; top:427px; width:622px; height:87px; text-align:left;" />
+          </div>
+
+          <div id="page7" class="page" style="background:url('https://daryeaye.github.io/gt2/2-07.jpg') no-repeat center/cover;"></div>
+
+          <div id="page8" class="page" style="background:url('https://daryeaye.github.io/gt2/2-08.jpg') no-repeat center/cover;">
+            <input type="text" id="page8TopRightInput" class="typeable" style="left:621px; top:75px; width:96px; height:49px; text-align:center;" />
+            <input type="text" id="page8TopMiddleInput" class="typeable" style="left:432px; top:75px; width:96px; height:49px; text-align:center;" />
+            <input type="text" id="page8TopLeftInput" class="typeable" style="left:243px; top:75px; width:96px; height:49px; text-align:center;" />
+            <a href="https://www.geogebra.org/m/wzjqwpbj" target="_blank">
+              <div class="box transparent" style="left:41px; top:161px; width:190px; height:192px;"></div>
+            </a>
+            <input type="text" id="page8ExtraInput" class="typeable" style="left:772px; top:233px; width:146px; height:49px; text-align:center;" />
+            <div class="box transparent" style="left:460px; top:299px; width:209px; height:133px; background-color:#FFEB99;">
+              <img src="https://daryeaye.github.io/gt2/triangleinequality.gif" style="width:100%; height:100%;" alt="Triangle Inequality">
+            </div>
+          </div>
+
+          <div id="page9" class="page" style="background:url('https://daryeaye.github.io/gt2/2-09.jpg') no-repeat center/cover;">
+            <a href="https://www.geogebra.org/m/wzjqwpbj" target="_blank">
+              <div class="box transparent" style="left:740px; top:73px; width:190px; height:192px;"></div>
+            </a>
+            <div class="box transparent" style="left:711px; top:358px; width:210px; height:133px;">
+              <img src="https://daryeaye.github.io/gt2/triangleinequality.gif" style="width:100%; height:100%;" alt="Triangle Inequality">
+            </div>
+
+            <input type="text" id="p9box3" class="typeable" style="left:48px; top:269px; width:173px; height:48px; text-align:center;" />
+            <input type="text" id="p9box4" class="typeable" style="left:48px; top:323px; width:173px; height:49px; text-align:center;" />
+            <input type="text" id="p9box5" class="typeable" style="left:48px; top:378px; width:173px; height:49px; text-align:center;" />
+            <input type="text" id="p9box6" class="typeable" style="left:48px; top:433px; width:173px; height:49px; text-align:center;" />
+            <input type="text" id="p9box7" class="typeable" style="left:256px; top:269px; width:135px; height:48px; text-align:center;" />
+            <input type="text" id="p9box8" class="typeable" style="left:256px; top:323px; width:135px; height:49px; text-align:center;" />
+            <input type="text" id="p9box9" class="typeable" style="left:256px; top:378px; width:135px; height:49px; text-align:center;" />
+            <input type="text" id="p9box10" class="typeable" style="left:256px; top:433px; width:135px; height:49px; text-align:center;" />
+            <input type="text" id="p9box11" class="typeable" style="left:454px; top:269px; width:65px; height:48px; text-align:center;" />
+            <input type="text" id="p9box12" class="typeable" style="left:454px; top:323px; width:65px; height:49px; text-align:center;" />
+            <input type="text" id="p9box13" class="typeable" style="left:454px; top:378px; width:65px; height:49px; text-align:center;" />
+            <input type="text" id="p9box14" class="typeable" style="left:454px; top:433px; width:65px; height:49px; text-align:center;" />
+            <input type="text" id="p9box15" class="typeable" style="left:541px; top:269px; width:65px; height:48px; text-align:center;" />
+            <input type="text" id="p9box16" class="typeable" style="left:541px; top:323px; width:65px; height:49px; text-align:center;" />
+            <input type="text" id="p9box17" class="typeable" style="left:541px; top:378px; width:65px; height:49px; text-align:center;" />
+            <input type="text" id="p9box18" class="typeable" style="left:541px; top:433px; width:65px; height:49px; text-align:center;" />
+          </div>
+
+          <div id="page10" class="page" style="background:url('https://daryeaye.github.io/gt2/2-10.jpg') no-repeat center/cover;">
+            <a href="https://www.geogebra.org/m/wzjqwpbj" target="_blank">
+              <div class="box transparent" style="left:740px; top:73px; width:190px; height:192px;"></div>
+            </a>
+            <div class="box transparent" style="left:711px; top:358px; width:210px; height:133px;">
+              <img src="https://daryeaye.github.io/gt2/triangleinequality.gif" style="width:100%; height:100%;" alt="Triangle Inequality">
+            </div>
+
+            <input type="text" id="p10box3" class="typeable" style="left:48px; top:269px; width:173px; height:48px; text-align:center;" />
+            <input type="text" id="p10box4" class="typeable" style="left:48px; top:323px; width:173px; height:49px; text-align:center;" />
+            <input type="text" id="p10box5" class="typeable" style="left:48px; top:378px; width:173px; height:49px; text-align:center;" />
+            <input type="text" id="p10box6" class="typeable" style="left:48px; top:433px; width:173px; height:49px; text-align:center;" />
+            <input type="text" id="p10box7" class="typeable" style="left:256px; top:269px; width:135px; height:48px; text-align:center;" />
+            <input type="text" id="p10box8" class="typeable" style="left:256px; top:323px; width:135px; height:49px; text-align:center;" />
+            <input type="text" id="p10box9" class="typeable" style="left:256px; top:378px; width:135px; height:49px; text-align:center;" />
+            <input type="text" id="p10box10" class="typeable" style="left:256px; top:433px; width:135px; height:49px; text-align:center;" />
+            <input type="text" id="p10box11" class="typeable" style="left:454px; top:269px; width:65px; height:48px; text-align:center;" />
+            <input type="text" id="p10box12" class="typeable" style="left:454px; top:323px; width:65px; height:49px; text-align:center;" />
+            <input type="text" id="p10box13" class="typeable" style="left:454px; top:378px; width:65px; height:49px; text-align:center;" />
+            <input type="text" id="p10box14" class="typeable" style="left:454px; top:433px; width:65px; height:49px; text-align:center;" />
+            <input type="text" id="p10box15" class="typeable" style="left:541px; top:269px; width:65px; height:48px; text-align:center;" />
+            <input type="text" id="p10box16" class="typeable" style="left:541px; top:323px; width:65px; height:49px; text-align:center;" />
+            <input type="text" id="p10box17" class="typeable" style="left:541px; top:378px; width:65px; height:49px; text-align:center;" />
+            <input type="text" id="p10box18" class="typeable" style="left:541px; top:433px; width:65px; height:49px; text-align:center;" />
+          </div>
+
+          <div id="page11" class="page" style="background:url('https://daryeaye.github.io/gt2/2-11.jpg') no-repeat center/cover;">
+            <div id="draggable1" class="draggable draggable-box" style="left:783px; top:135px; width:128px; height:52px;">Third</div>
+            <div id="draggable2" class="draggable draggable-box" style="left:766px; top:194px; width:162px; height:59px;">Smaller</div>
+            <div id="draggable3" class="draggable draggable-box" style="left:802px; top:260px; width:91px; height:61px;">Sum</div>
+            <div id="draggable4" class="draggable draggable-box" style="left:764px; top:337px; width:167px; height:50px;">Greater</div>
+          </div>
+
+          <div id="page12" class="page" style="background:url('https://daryeaye.github.io/gt2/2-12.jpg') no-repeat center/cover;">
+            <input type="text" id="p12box1" class="typeable" style="left:24px; top:125px; width:563px; height:44px; text-align:center;" />
+            <input type="text" id="p12box2" class="typeable" style="left:25px; top:220px; width:563px; height:43px; text-align:center;" />
+            <input type="text" id="p12box3" class="typeable" style="left:25px; top:322px; width:563px; height:44px; text-align:center;" />
+            <input type="text" id="p12box4" class="typeable" style="left:24px; top:413px; width:563px; height:44px; text-align:center;" />
+          </div>
+
+          <div id="page13" class="page" style="background:url('https://daryeaye.github.io/gt2/2-13.jpg') no-repeat center/cover;">
+            <input type="text" id="p13top" class="typeable" style="left:344px; top:168px; width:579px; height:60px; text-align:center;" />
+            <input type="text" id="p13box1" class="typeable" style="left:695px; top:253px; width:89px; height:64px; text-align:center;" />
+            <input type="text" id="p13box2" class="typeable" style="left:799px; top:253px; width:89px; height:64px; text-align:center;" />
+            <input type="text" id="p13box3" class="typeable" style="left:644px; top:328px; width:89px; height:65px; text-align:center;" />
+            <input type="text" id="p13box4" class="typeable" style="left:747px; top:328px; width:89px; height:65px; text-align:center;" />
+            <input type="text" id="p13box5" class="typeable" style="left:850px; top:328px; width:89px; height:65px; text-align:center;" />
+          </div>
+
+          <div id="page14" class="page" style="background:url('https://daryeaye.github.io/gt2/2-14.jpg') no-repeat center/cover;">
+            <input type="text" id="p14box1" class="typeable" style="position:absolute; left:10px; top:138px; width:89px; height:64px; text-align:center; background-color:transparent;" />
+            <input type="text" id="p14box2" class="typeable" style="position:absolute; left:117px; top:138px; width:88px; height:64px; text-align:center; background-color:transparent;" />
+            <input type="text" id="p14box3" class="typeable" style="position:absolute; left:223px; top:138px; width:89px; height:64px; text-align:center; background-color:transparent;" />
+            <input type="text" id="p14box4" class="typeable" style="position:absolute; left:329px; top:138px; width:89px; height:64px; text-align:center; background-color:transparent;" />
+            <input type="text" id="p14box5" class="typeable" style="position:absolute; left:436px; top:138px; width:88px; height:64px; text-align:center; background-color:transparent;" />
+            <input type="text" id="p14box6" class="typeable" style="position:absolute; left:542px; top:138px; width:89px; height:64px; text-align:center; background-color:transparent;" />
+            <input type="text" id="p14box7" class="typeable" style="position:absolute; left:648px; top:138px; width:89px; height:64px; text-align:center; background-color:transparent;" />
+            <input type="text" id="p14box8" class="typeable" style="position:absolute; left:755px; top:138px; width:88px; height:64px; text-align:center; background-color:transparent;" />
+            <input type="text" id="p14box9" class="typeable" style="position:absolute; left:861px; top:138px; width:89px; height:64px; text-align:center; background-color:transparent;" />
+            <input type="text" id="p14box10" class="typeable" style="position:absolute; left:159px; top:284px; width:94px; height:47px; text-align:center;" />
+            <input type="text" id="p14box11" class="typeable" style="position:absolute; left:568px; top:284px; width:75px; height:47px; text-align:center;" />
+            <input type="text" id="p14box12" class="typeable" style="position:absolute; left:695px; top:284px; width:142px; height:47px; text-align:center;" />
+          </div>
+
+          <div id="page15" class="page" style="background:url('https://daryeaye.github.io/gt2/2-15.jpg') no-repeat center/cover;">
+            <input type="text" id="p15box1" class="typeable" style="position:absolute; left:390px; top:216px; width:38px; height:57px; text-align:center;" />
+            <input type="text" id="p15box2" class="typeable" style="position:absolute; left:438px; top:216px; width:38px; height:57px; text-align:center;" />
+            <input type="text" id="p15box3" class="typeable" style="position:absolute; left:486px; top:216px; width:38px; height:57px; text-align:center;" />
+            <input type="text" id="p15box4" class="typeable" style="position:absolute; left:534px; top:216px; width:38px; height:57px; text-align:center;" />
+            <input type="text" id="p15box5" class="typeable" style="position:absolute; left:582px; top:216px; width:38px; height:57px; text-align:center;" />
+            <input type="text" id="p15box6" class="typeable" style="position:absolute; left:630px; top:216px; width:38px; height:57px; text-align:center;" />
+            <input type="text" id="p15box7" class="typeable" style="position:absolute; left:678px; top:216px; width:38px; height:57px; text-align:center;" />
+            <input type="text" id="p15box8" class="typeable" style="position:absolute; left:726px; top:216px; width:39px; height:57px; text-align:center;" />
+            <input type="text" id="p15box9" class="typeable" style="position:absolute; left:775px; top:216px; width:38px; height:57px; text-align:center;" />
+            <input type="text" id="p15box10" class="typeable" style="position:absolute; left:823px; top:216px; width:38px; height:57px; text-align:center;" />
+            <input type="text" id="p15box11" class="typeable" style="position:absolute; left:871px; top:216px; width:38px; height:57px; text-align:center;" />
+            <input type="text" id="p15yellow" class="typeable" style="position:absolute; left:509px; top:411px; width:281px; height:65px; text-align:center; background-color:#FFEB99;" />
+            <button id="unlockBtn" style="position:absolute; left:509px; top:480px; width:281px; height:30px; text-align:center; font-family:'Comic Sans MS',sans-serif; font-size:16px;">Unlock</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECOND CANVAS (role selection + PDF.js in-canvas) -->
+    <div id="role-container" aria-label="Role selection canvas">
+      <div id="pdfStatus">Loading PDF...</div>
+
+      <div id="role-stage">
+        <!-- NOTE: These are placeholder hotspots in 960x540.
+             You can adjust left/top/width/height to match the exact right places. -->
+        <button class="role-hotspot" id="hotspot-officer"
+                style="left:117px; top:73px; width:197px; height:166px;"
+                aria-label="Officer" title="Officer"></button>
+
+        <button class="role-hotspot" id="hotspot-professor"
+                style="left:382px; top:73px; width:197px; height:166px;"
+                aria-label="Professor" title="Professor"></button>
+
+        <button class="role-hotspot" id="hotspot-hacker"
+                style="left:647px; top:73px; width:197px; height:166px;"
+                aria-label="Hacker" title="Hacker"></button>
+
+        <button class="role-hotspot" id="hotspot-video"
+                style="left:301px; top:460px; width:358px; height:31px;"
+                aria-label="What is the file for?" title="What is the file for?"></button>
+      </div>
+
+      <div id="pdfViewer"></div>
+    </div>
+  </div>
+
+  <script>
+    /* -----------------------------
+       Navigation / Progress (Pt2 logic preserved)
+       ----------------------------- */
+    let currentPage = 1, totalPages = 15, maxPageVisited = 1;
+
+    function updateProgress() {
+      const p = (maxPageVisited / totalPages) * 100;
+      document.getElementById("progress").style.width = p + "%";
+      document.getElementById("progressText").innerText = p.toFixed(0) + "% completed";
+    }
+
+    function showPage(p) {
+      for (let i = 1; i <= totalPages; i++) {
+        document.getElementById("page" + i).classList.remove("active");
+      }
+      document.getElementById("page" + p).classList.add("active");
+
+      if (p === 1) {
+        document.getElementById("prev-btn").style.display = "none";
+        document.getElementById("next-btn").style.display = "inline-block";
+      } else if (p === totalPages) {
+        document.getElementById("prev-btn").style.display = "inline-block";
+        document.getElementById("next-btn").style.display = "none";
+      } else {
+        document.getElementById("prev-btn").style.display = "inline-block";
+        document.getElementById("next-btn").style.display = "inline-block";
+      }
+
+      updateProgress();
+    }
+
+    function nextPage() {
+      if (currentPage === 5) {
+        const t = document.getElementById("middleTopInput").value.trim().toLowerCase();
+        const b = document.getElementById("middleBottomInput").value.trim().toLowerCase();
+        if (t !== "45" || b !== "45") {
+          alert("❌ Nah. Mrs. James needs you to be more careful!");
+          return;
+        }
+      }
+
+      if (currentPage === 6) {
+        const v = document.getElementById("page6MiddleInput").value.trim().toLowerCase();
+        if (v !== "30") {
+          alert("❌ Nah. Mrs. James needs you to be more careful!");
+          return;
+        }
+      }
+
+      if (currentPage === 9 || currentPage === 10) {
+        const ids = currentPage === 9
+          ? ["p9box3","p9box4","p9box5","p9box6","p9box7","p9box8","p9box9","p9box10","p9box11","p9box12","p9box13","p9box14","p9box15","p9box16","p9box17","p9box18"]
+          : ["p10box3","p10box4","p10box5","p10box6","p10box7","p10box8","p10box9","p10box10","p10box11","p10box12","p10box13","p10box14","p10box15","p10box16","p10box17","p10box18"];
+
+        for (let id of ids) {
+          if (document.getElementById(id).value.trim() === "") {
+            alert("❌ Nah. Mrs. James needs you to be more careful!");
+            return;
+          }
+        }
+      }
+
+      if (currentPage === 12) {
+        if (
+          document.getElementById("p12box1").value.trim().toLowerCase() !== "yes" ||
+          document.getElementById("p12box2").value.trim().toLowerCase() !== "no"  ||
+          document.getElementById("p12box3").value.trim().toLowerCase() !== "no"  ||
+          document.getElementById("p12box4").value.trim().toLowerCase() !== "yes"
+        ) {
+          alert("❌ Nah. Mrs. James needs you to be more careful!");
+          return;
+        }
+      }
+
+      if (currentPage === 13) {
+        if (
+          document.getElementById("p13box1").value.trim().toLowerCase() !== "3" ||
+          document.getElementById("p13box2").value.trim().toLowerCase() !== "4" ||
+          document.getElementById("p13box3").value.trim().toLowerCase() !== "5" ||
+          document.getElementById("p13box4").value.trim().toLowerCase() !== "6" ||
+          document.getElementById("p13box5").value.trim().toLowerCase() !== "7"
+        ) {
+          alert("❌ Nah. Mrs. James needs you to be more careful!");
+          return;
+        }
+      }
+
+      if (currentPage === 14) {
+        if (
+          document.getElementById("p14box1").value.trim().toLowerCase() !== "1" ||
+          document.getElementById("p14box9").value.trim().toLowerCase() !== "9" ||
+          document.getElementById("p14box10").value.trim().toLowerCase() !== "third" ||
+          document.getElementById("p14box11").value.trim().toLowerCase() !== "sum" ||
+          document.getElementById("p14box12").value.trim().toLowerCase() !== "difference"
+        ) {
+          alert("❌ Nah. Mrs. James needs you to be more careful!");
+          return;
+        }
+      }
+
+      if (currentPage < totalPages) {
+        currentPage++;
+        if (currentPage > maxPageVisited) maxPageVisited = currentPage;
+        showPage(currentPage);
+      }
+    }
+
+    function prevPage() {
+      if (currentPage > 1) {
+        currentPage--;
+        showPage(currentPage);
+      }
+    }
+
+    function setupPersistence() {
+      const inp = document.querySelectorAll("input.typeable");
+      inp.forEach(el => {
+        const key = el.id;
+        const stored = localStorage.getItem(key);
+        if (stored !== null) el.value = stored;
+        el.addEventListener("input", () => {
+          localStorage.setItem(key, el.value);
+        });
+      });
+    }
+
+    function makeDraggable(el) {
+      el.onmousedown = function (e) {
+        e.preventDefault();
+        let ox = e.clientX - parseInt(window.getComputedStyle(el).left);
+        let oy = e.clientY - parseInt(window.getComputedStyle(el).top);
+
+        function moveH(e) {
+          el.style.left = (e.clientX - ox) + "px";
+          el.style.top = (e.clientY - oy) + "px";
+        }
+
+        function upH() {
+          document.removeEventListener("mousemove", moveH);
+          document.removeEventListener("mouseup", upH);
+        }
+
+        document.addEventListener("mousemove", moveH);
+        document.addEventListener("mouseup", upH);
+      };
+    }
+
+    function confirmName() {
+      const ni = document.getElementById("username");
+      const name = ni.value.trim();
+      if (name !== "") {
+        localStorage.setItem("username", name);
+        ni.disabled = true;
+        alert("Name confirmed as: " + name);
+      } else alert("Please enter a name.");
+    }
+
+    /* -----------------------------
+       PDF.js viewer (2nd canvas)
+       ----------------------------- */
+    function initPdfJs() {
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    }
+
+    async function renderPdfIntoSecondCanvas(pdfUrl) {
+      const roleContainer = document.getElementById("role-container");
+      const viewer = document.getElementById("pdfViewer");
+      const status = document.getElementById("pdfStatus");
+
+      roleContainer.classList.add("pdf-mode");
+      viewer.style.display = "block";
+      viewer.innerHTML = "";
+      viewer.scrollTop = 0;
+
+      status.style.display = "block";
+      status.textContent = "Loading PDF...";
+
+      try {
+        const loadingTask = pdfjsLib.getDocument({ url: pdfUrl });
+        const pdf = await loadingTask.promise;
+
+        status.textContent = "Rendering pages...";
+
+        const targetWidth = 920; // fit inside 960
+        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+          const page = await pdf.getPage(pageNum);
+
+          const viewport1 = page.getViewport({ scale: 1 });
+          const scale = targetWidth / viewport1.width;
+          const viewport = page.getViewport({ scale });
+
+          const canvas = document.createElement("canvas");
+          canvas.className = "pdfPageCanvas";
+          canvas.width = Math.floor(viewport.width);
+          canvas.height = Math.floor(viewport.height);
+
+          const ctx = canvas.getContext("2d", { alpha: false });
+          viewer.appendChild(canvas);
+
+          await page.render({ canvasContext: ctx, viewport }).promise;
+        }
+
+        status.style.display = "none";
+      } catch (err) {
+        console.error("PDF.js render error:", err);
+        status.textContent = "Failed to load PDF (see Console).";
+      }
+    }
+
+    function initSecondCanvasHotspots() {
+      document.getElementById("hotspot-officer").addEventListener("click", function () {
+        renderPdfIntoSecondCanvas("https://daryeaye.github.io/geotopia/GT1%20Officer+.pdf");
+      });
+
+      document.getElementById("hotspot-professor").addEventListener("click", function () {
+        renderPdfIntoSecondCanvas("https://daryeaye.github.io/geotopia/GT1%20Professor+.pdf");
+      });
+
+      document.getElementById("hotspot-hacker").addEventListener("click", function () {
+        renderPdfIntoSecondCanvas("https://daryeaye.github.io/geotopia/GT1%20Hacker+.pdf");
+      });
+
+      document.getElementById("hotspot-video").addEventListener("click", function () {
+        window.open("https://www.youtube.com/watch?v=Fj98o3aFfk8", "_blank");
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      initPdfJs();
+      showPage(currentPage);
+      setupPersistence();
+
+      document.querySelectorAll(".draggable").forEach(el => { makeDraggable(el); });
+
+      const sn = localStorage.getItem("username");
+      const ni = document.getElementById("username");
+      if (sn !== null && sn !== "") {
+        ni.value = sn;
+        ni.disabled = true;
+      }
+
+      document.getElementById("unlockBtn").addEventListener("click", function () {
+        let yi = document.getElementById("p15yellow");
+        let val = yi.value.trim().toLowerCase();
+
+        if (val === "121") {
+          alert("✅Great job! Ask the merchant for the rest of the code.");
+        } else if (val === "121ja") {
+          window.open("https://daryeaye.github.io/geotopia/batele.pdf", "_blank");
+          yi.value = "";
+          localStorage.setItem("p15yellow", "");
+        } else {
+          alert("❌ Nah. Mrs. James needs you to be more careful!");
+        }
+      });
+
+      initSecondCanvasHotspots();
+    });
+  </script>
+
+  <div id="side-widget">
+    <p class="title">Need translation?</p>
+    <button id="select-text">Select Text</button>
+    <p><a href="https://translate.google.com/?sl=en&tl=es&op=images" target="_blank">Click me and paste from clipboard</a></p>
+  </div>
+
+  <script>
+    document.getElementById("select-text").addEventListener("click", function () {
+      const o = document.createElement("div");
+      o.id = "selection-overlay";
+      document.body.appendChild(o);
+
+      let sX, sY, sB;
+
+      o.addEventListener("mousedown", function (e) {
+        sX = e.clientX; sY = e.clientY;
+
+        sB = document.createElement("div");
+        sB.id = "selection-box";
+        sB.style.left = sX + "px";
+        sB.style.top = sY + "px";
+        sB.style.width = "0px";
+        sB.style.height = "0px";
+        o.appendChild(sB);
+
+        function mH(e) {
+          const cX = e.clientX, cY = e.clientY;
+          const l = Math.min(sX, cX), t = Math.min(sY, cY);
+          const w = Math.abs(cX - sX), h = Math.abs(cY - sY);
+          sB.style.left = l + "px";
+          sB.style.top = t + "px";
+          sB.style.width = w + "px";
+          sB.style.height = h + "px";
+        }
+
+        function uH() {
+          o.removeEventListener("mousemove", mH);
+          o.removeEventListener("mouseup", uH);
+
+          const r = sB.getBoundingClientRect();
+          document.body.removeChild(o);
+
+          const T = document.getElementById("container");
+          const TR = T.getBoundingClientRect();
+
+          html2canvas(T, { useCORS: true, allowTaint: false }).then(canvas => {
+            const sf = canvas.width / TR.width;
+            const sx = (r.left - TR.left) * sf;
+            const sy = (r.top - TR.top) * sf;
+            const sw = r.width * sf;
+            const sh = r.height * sf;
+
+            const cc = document.createElement("canvas");
+            cc.width = sw;
+            cc.height = sh;
+
+            const ctx = cc.getContext("2d");
+            ctx.drawImage(canvas, sx, sy, sw, sh, 0, 0, sw, sh);
+
+            cc.toBlob(blob => {
+              if (blob) {
+                const itm = new ClipboardItem({ "image/png": blob });
+                navigator.clipboard.write([itm]).then(() => {
+                  alert("Screenshot copied to clipboard.");
+                }).catch(err => {
+                  console.error("Failed to copy screenshot to clipboard", err);
+                  alert("Failed to copy screenshot to clipboard.");
+                });
+              }
+            });
+          });
+        }
+
+        o.addEventListener("mousemove", mH);
+        o.addEventListener("mouseup", uH);
+      });
+    });
+  </script>
+
+  <!-- ©XDY. All rights reserved. This code is the intellectual property of XDY. Unauthorized copying, reproduction, or redistribution is strictly prohibited. For educational use only. Contact the author for permissions. -->
+</body>
+</html>
