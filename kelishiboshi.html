@@ -5,13 +5,12 @@
   <title>Lost Treasure Pt2 Mrs James</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Love+Ya+Like+A+Sister&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
-  <!-- PDF.js (Google Sites-safe PDF rendering) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
   <style>
-    body, html {
+    html, body {
       margin: 0;
       padding: 0;
       min-height: 100vh;
@@ -26,6 +25,7 @@
       align-items: flex-start;
       padding: 10px 0 40px;
       box-sizing: border-box;
+      font-family: Arial, sans-serif;
     }
 
     #app-container {
@@ -35,46 +35,152 @@
       width: 100%;
     }
 
-    /* Sticky header so progress bar is always visible */
+    #tutorialOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.9);
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #tutorialBox {
+      position: relative;
+      width: min(860px, 88vw);
+      height: min(500px, 78vh);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #tutorialImage {
+      max-width: 100%;
+      max-height: 100%;
+      display: block;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+    }
+
+    #tutorialNext {
+      position: absolute;
+      right: -18px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 56px;
+      height: 50%;
+      min-height: 140px;
+      border: none;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.88);
+      color: #111;
+      font-size: 42px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.25);
+      line-height: 1;
+      font-family: "Love Ya Like A Sister", cursive;
+    }
+
+    #tutorialNext:hover {
+      background: rgba(255,255,255,0.96);
+    }
+
     #header {
       width: 960px;
       background: #eee;
       padding: 10px;
       margin-bottom: 10px;
-
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
       position: sticky;
       top: 0;
       z-index: 2000;
       box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+      box-sizing: border-box;
     }
 
-    #header-top {
+    #topAuthRow, #progressRow {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 10px;
+      gap: 10px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    #topAuthLeft {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    #student-username, #student-password {
+      font-size: 16px;
+      padding: 5px 8px;
+      width: 150px;
+      box-sizing: border-box;
+    }
+
+    #registerBtn, #loginBtn, #logoutBtn, #introBtn, #openFileBtn, #prev-btn, #next-btn,
+    #unlockBtn, #collapse-widget, #side-widget button:not(#collapse-widget) {
+      font-family: "Love Ya Like A Sister", cursive;
+    }
+
+    #registerBtn, #loginBtn, #logoutBtn, #introBtn {
+      font-size: 22px;
+      padding: 6px 12px;
+      cursor: pointer;
+      background-color: lightblue;
+      border: none;
+      line-height: 1;
+      border-radius: 6px;
+    }
+
+    #authStatus {
+      font-size: 15px;
+      font-family: "Comic Sans MS", sans-serif;
+      color: #222;
+      min-width: 170px;
+      text-align: right;
     }
 
     #progressBar {
-      width: 100%;
+      flex: 1;
       background: #ccc;
       height: 20px;
-      margin-top: 10px;
+      margin: 0 10px 0 0;
+      position: relative;
     }
 
     #progress {
-      width: 0%;
       background: green;
       height: 100%;
+      width: 0%;
     }
 
-    #container-wrap {
+    #progressText {
+      font-size: 16px;
+      white-space: nowrap;
+    }
+
+    #saveStatus {
+      font-size: 13px;
+      color: #444;
+      min-width: 120px;
+      text-align: right;
+    }
+
+    #main-area {
       width: 100%;
       display: flex;
       justify-content: center;
     }
 
-    /* wrapper anchors nav buttons without shifting canvas */
     #main-wrapper {
       position: relative;
       width: 960px;
@@ -96,9 +202,12 @@
       width: 960px;
       height: 540px;
       display: none;
+      overflow: hidden;
     }
 
-    .page.active { display: block; }
+    .page.active {
+      display: block;
+    }
 
     .box {
       position: absolute;
@@ -106,7 +215,9 @@
       background-color: rgba(255,0,0,0.3);
     }
 
-    .transparent { background-color: transparent !important; }
+    .transparent {
+      background-color: transparent !important;
+    }
 
     input.typeable {
       position: absolute;
@@ -114,6 +225,7 @@
       font-size: 22px;
       border: 1px solid black;
       background: rgba(173,216,230,0.5);
+      box-sizing: border-box;
     }
 
     .draggable-box {
@@ -129,19 +241,9 @@
       background-color: rgba(255,255,255,0.7);
       cursor: move;
       user-select: none;
+      z-index: 20;
     }
 
-    button {
-      font-family: "Comic Sans MS", sans-serif;
-      font-size: 20px;
-      background-color: lightblue;
-      border: none;
-      padding: 10px 20px;
-      margin: 0 5px;
-      cursor: pointer;
-    }
-
-    /* Prev/Next: left side, vertically centered, close to canvas */
     #nav-buttons {
       position: absolute;
       top: 50%;
@@ -150,12 +252,18 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
+      z-index: 3000;
     }
 
-    /* ==============================
-       SECOND CANVAS (same size 960x540)
-       Role stage also 960x540 (no scaling)
-       ============================== */
+    button {
+      font-size: 20px;
+      background-color: lightblue;
+      border: none;
+      padding: 10px 20px;
+      margin: 0;
+      cursor: pointer;
+    }
+
     #role-container {
       position: relative;
       width: 960px;
@@ -216,10 +324,26 @@
       display: none;
     }
 
-    /* hides role-stage (background + hotspots) once PDF is active */
-    #role-container.pdf-mode #role-stage { display: none; }
+    #role-container.pdf-mode #role-stage {
+      display: none;
+    }
 
-    /* Translation widget (unchanged) */
+    #openFileWrap {
+      width: 960px;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    #openFileBtn {
+      font-size: 20px;
+      padding: 8px 16px;
+      background: lightblue;
+      border: none;
+      cursor: pointer;
+      border-radius: 6px;
+      line-height: 1;
+    }
+
     #side-widget {
       position: fixed;
       top: 20px;
@@ -232,6 +356,47 @@
       box-sizing: border-box;
       font-family: 'Caveat', cursive;
       z-index: 999;
+      transition: all 0.25s ease;
+    }
+
+    #side-widget.collapsed {
+      width: 120px;
+      height: 24px;
+      padding: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: rgba(249,249,249,0.95);
+      border: 1px solid #ccc;
+      font-family: "Comic Sans MS", sans-serif;
+      font-size: 8px;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    #side-widget.collapsed * {
+      display: none !important;
+    }
+
+    #side-widget.collapsed::after {
+      content: "Translation";
+    }
+
+    #collapse-widget {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 22px;
+      height: 22px;
+      padding: 0;
+      line-height: 1;
+      font-size: 14px;
+      background: lightblue;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
     }
 
     #side-widget p.title {
@@ -240,7 +405,7 @@
       margin: 0 0 10px;
     }
 
-    #side-widget button, #side-widget a {
+    #side-widget button:not(#collapse-widget) {
       display: block;
       margin: 0 auto;
       font-size: 20px;
@@ -249,8 +414,20 @@
       background: lightblue;
       border: none;
       padding: 10px;
+    }
+
+    #side-widget a {
+      display: block;
+      margin: 0 auto;
+      font-size: 14px;
+      cursor: pointer;
+      text-align: center;
+      background: lightblue;
+      border: none;
+      padding: 6px;
       text-decoration: none;
       color: inherit;
+      font-family: "Comic Sans MS", sans-serif;
     }
 
     #selection-overlay {
@@ -268,33 +445,109 @@
       border: 2px dashed red;
       background: rgba(0,0,0,0.1);
     }
+
+    #pageTransitionOverlay {
+      position: absolute;
+      inset: 0;
+      background: #000;
+      z-index: 10050;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.28s ease;
+    }
+
+    #customPopupOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      z-index: 20000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #customPopupBox {
+      width: min(430px, 88vw);
+      background: #fffdf7;
+      border: 3px solid #000;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      padding: 24px 20px 18px;
+      text-align: center;
+      font-family: "Comic Sans MS", sans-serif;
+    }
+
+    #customPopupMessage {
+      font-size: 24px;
+      line-height: 1.35;
+      color: #111;
+      margin-bottom: 18px;
+    }
+
+    #customPopupButtons {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .popupBtn {
+      font-family: "Love Ya Like A Sister", cursive;
+      font-size: 24px;
+      background: lightblue;
+      border: 2px solid #000;
+      border-radius: 10px;
+      padding: 8px 20px;
+      cursor: pointer;
+    }
   </style>
 </head>
 
 <body>
+  <div id="tutorialOverlay">
+    <div id="tutorialBox">
+      <img id="tutorialImage" alt="Tutorial" />
+      <button id="tutorialNext" type="button">›</button>
+    </div>
+  </div>
+
+  <div id="customPopupOverlay">
+    <div id="customPopupBox">
+      <div id="customPopupMessage"></div>
+      <div id="customPopupButtons"></div>
+    </div>
+  </div>
+
   <div id="app-container">
     <div id="header">
-      <div id="header-top">
-        <div>
-          <input type="text" id="username" placeholder="Enter your name" style="font-size:16px; padding:5px;" />
-          <button id="confirmBtn" onclick="confirmName()">Confirm</button>
-          <button id="introBtn" onclick="openIntro()">Intro</button>
+      <div id="topAuthRow">
+        <div id="topAuthLeft">
+          <input type="text" id="student-username" placeholder="Username" autocomplete="username" />
+          <input type="password" id="student-password" placeholder="Password" autocomplete="current-password" />
+          <button id="registerBtn" type="button">Register</button>
+          <button id="loginBtn" type="button">Log In</button>
+          <button id="logoutBtn" type="button" style="display:none;">Log Out</button>
+          <button id="introBtn" type="button">Intro</button>
         </div>
+        <div id="authStatus">Not logged in</div>
       </div>
 
-      <div id="progressBar"><div id="progress"></div></div>
-      <span id="progressText">0% completed</span>
+      <div id="progressRow">
+        <div id="progressBar"><div id="progress"></div></div>
+        <span id="progressText">0% completed</span>
+        <span id="saveStatus">Not saved yet</span>
+      </div>
     </div>
 
-    <div id="container-wrap">
+    <div id="main-area">
       <div id="main-wrapper">
         <div id="nav-buttons">
-          <button id="prev-btn" onclick="prevPage()">Previous</button>
-          <button id="next-btn" onclick="nextPage()">Next</button>
+          <button id="prev-btn" type="button">Previous</button>
+          <button id="next-btn" type="button">Next</button>
         </div>
 
         <div id="container">
-          <!-- Page 1: role boxes removed + role-for button removed -->
+<!-- Page 1: role boxes removed + role-for button removed -->
           <div id="page1" class="page active" style="background:url('https://daryeaye.github.io/gt2/2-01.jpg') no-repeat center/cover;"></div>
 
           <div id="page2" class="page" style="background:url('https://daryeaye.github.io/gt2/2-02.jpg') no-repeat center/cover;"></div>
@@ -452,11 +705,11 @@
             <input type="text" id="p15yellow" class="typeable" style="position:absolute; left:509px; top:411px; width:281px; height:65px; text-align:center; background-color:#FFEB99;" />
             <button id="unlockBtn" style="position:absolute; left:509px; top:480px; width:281px; height:30px; text-align:center; font-family:'Comic Sans MS',sans-serif; font-size:16px;">Unlock</button>
           </div>
+          <div id="pageTransitionOverlay"></div>
         </div>
       </div>
     </div>
 
-    <!-- SECOND CANVAS (role selection + PDF.js in-canvas) -->
     <div id="role-container" aria-label="Role selection canvas">
       <div id="pdfStatus">Loading PDF...</div>
 
@@ -482,18 +735,486 @@
 
       <div id="pdfViewer"></div>
     </div>
+
+    <div id="openFileWrap">
+      <button id="openFileBtn" type="button">Open the file on a new tab</button>
+    </div>
+  </div>
+
+  <div id="side-widget" class="collapsed" aria-label="Translation widget">
+    <button id="collapse-widget" type="button" aria-label="Collapse translation widget">–</button>
+    <p class="title">Need translation?</p>
+    <button id="select-text" type="button">Select Text</button>
+    <p><a href="https://translate.google.com/?sl=en&tl=es&op=images" target="_blank">Click me and paste from clipboard</a></p>
   </div>
 
   <script>
-    /* -----------------------------
-       Navigation / Progress (Pt2 logic preserved)
-       ----------------------------- */
-    let currentPage = 1, totalPages = 15, maxPageVisited = 1;
+    const TUTORIAL_IMAGES = [
+      "https://daryeaye.github.io/geotopia/t1.jpg",
+      "https://daryeaye.github.io/geotopia/t2.jpg",
+      "https://daryeaye.github.io/geotopia/t3.jpg"
+    ];
+
+    const TUTORIAL_STORAGE_KEY = "lt2_tutorial_seen";
+    const APP_ID = "losttreasure-pt2";
+    const WORKER_BASE_URL = "https://geotopia-powerfall-auth-api.daryeaye.workers.dev";
+    const SESSION_STORAGE = {
+      token: "lt2_auth_token",
+      username: "lt2_auth_username"
+    };
+
+    const INTRO_URL = "https://www.youtube.com/watch?v=PFy9wgmUADc";
+    const WRONG_MESSAGE = "❌ Nah. Mrs. James needs you to be more careful!";
+    const SUCCESS_HINT = "✅Great job! Ask the merchant for the rest of the code.";
+    const FINAL_UNLOCK_URL = "https://daryeaye.github.io/geotopia/batele.pdf";
+    const ROLE_PDF_URLS = {
+      officer: "https://daryeaye.github.io/geotopia/GT1%20Officer+.pdf",
+      professor: "https://daryeaye.github.io/geotopia/GT1%20Professor+.pdf",
+      hacker: "https://daryeaye.github.io/geotopia/GT1%20Hacker+.pdf"
+    };
+    const ROLE_VIDEO_URL = "https://www.youtube.com/watch?v=Fj98o3aFfk8";
+
+    let currentPage = 1;
+    const totalPages = 15;
+    let maxPageVisited = 1;
+
+    let currentPdfUrl = "";
+    let currentPdfRole = "";
+    let pdfScrollTop = 0;
+
+    let authToken = "";
+    let authUsername = "";
+    let autoSaveTimer = null;
+    let saveInFlight = false;
+    let saveQueued = false;
+    let isApplyingRemoteData = false;
+
+    let dragDefaults = {};
+
+    function openIntro() {
+      window.open(INTRO_URL, "_blank");
+    }
+
+    function setAuthStatus(message, isError = false) {
+      const el = document.getElementById("authStatus");
+      el.textContent = message;
+      el.style.color = isError ? "#b00020" : "#222";
+    }
+
+    function setSaveStatus(text) {
+      document.getElementById("saveStatus").textContent = text;
+    }
+
+
+    function closeCustomPopup() {
+      document.getElementById("customPopupOverlay").style.display = "none";
+      document.getElementById("customPopupMessage").textContent = "";
+      document.getElementById("customPopupButtons").innerHTML = "";
+    }
+
+    function showCustomPopup(message, buttons = [{ text: "OK", action: closeCustomPopup }]) {
+      const overlay = document.getElementById("customPopupOverlay");
+      const msg = document.getElementById("customPopupMessage");
+      const btnWrap = document.getElementById("customPopupButtons");
+
+      msg.textContent = message;
+      btnWrap.innerHTML = "";
+
+      buttons.forEach(btn => {
+        const b = document.createElement("button");
+        b.className = "popupBtn";
+        b.textContent = btn.text;
+        b.onclick = () => {
+          closeCustomPopup();
+          if (btn.action) btn.action();
+        };
+        btnWrap.appendChild(b);
+      });
+
+      overlay.style.display = "flex";
+    }
+
+    function showMessagePopup(message) {
+      showCustomPopup(message, [
+        { text: "OK", action: closeCustomPopup }
+      ]);
+    }
+
+    function updateAuthUI() {
+      const signedIn = !!authToken;
+      document.getElementById("registerBtn").style.display = signedIn ? "none" : "inline-block";
+      document.getElementById("loginBtn").style.display = signedIn ? "none" : "inline-block";
+      document.getElementById("logoutBtn").style.display = signedIn ? "inline-block" : "none";
+
+      if (signedIn) {
+        document.getElementById("student-username").value = authUsername || "";
+        setAuthStatus("Signed in as " + authUsername);
+      } else {
+        setAuthStatus("Not logged in");
+      }
+    }
+
+    function saveSessionLocally(token, username) {
+      authToken = token || "";
+      authUsername = username || "";
+      localStorage.setItem(SESSION_STORAGE.token, authToken);
+      localStorage.setItem(SESSION_STORAGE.username, authUsername);
+      updateAuthUI();
+    }
+
+    function clearSessionLocally() {
+      authToken = "";
+      authUsername = "";
+      localStorage.removeItem(SESSION_STORAGE.token);
+      localStorage.removeItem(SESSION_STORAGE.username);
+      updateAuthUI();
+    }
+
+    function restoreSessionLocally() {
+      authToken = localStorage.getItem(SESSION_STORAGE.token) || "";
+      authUsername = localStorage.getItem(SESSION_STORAGE.username) || "";
+      if (authUsername) {
+        document.getElementById("student-username").value = authUsername;
+      }
+      updateAuthUI();
+    }
+
+    function getTypeableInputs() {
+      return Array.from(document.querySelectorAll("input.typeable"));
+    }
+
+    function getInputSnapshot() {
+      const snapshot = {};
+      getTypeableInputs().forEach(el => {
+        snapshot[el.id] = el.value || "";
+      });
+      return snapshot;
+    }
+
+    function applyInputSnapshot(snapshot) {
+      isApplyingRemoteData = true;
+      getTypeableInputs().forEach(el => {
+        el.value = snapshot && Object.prototype.hasOwnProperty.call(snapshot, el.id)
+          ? (snapshot[el.id] ?? "")
+          : "";
+      });
+      isApplyingRemoteData = false;
+    }
+
+    function captureDragDefaults() {
+      dragDefaults = {};
+      document.querySelectorAll(".draggable-box").forEach(el => {
+        const style = window.getComputedStyle(el);
+        dragDefaults[el.id] = {
+          left: parseFloat(style.left) || 0,
+          top: parseFloat(style.top) || 0
+        };
+      });
+    }
+
+    function getDraggableSnapshot() {
+      const snapshot = {};
+      document.querySelectorAll(".draggable-box").forEach(el => {
+        const style = window.getComputedStyle(el);
+        snapshot[el.id] = {
+          left: parseFloat(style.left) || 0,
+          top: parseFloat(style.top) || 0
+        };
+      });
+      return snapshot;
+    }
+
+    function applyDraggableSnapshot(snapshot) {
+      if (!snapshot || typeof snapshot !== "object") return;
+      Object.entries(snapshot).forEach(([id, pos]) => {
+        const el = document.getElementById(id);
+        if (!el || !pos) return;
+        if (typeof pos.left === "number") el.style.left = pos.left + "px";
+        if (typeof pos.top === "number") el.style.top = pos.top + "px";
+      });
+    }
+
+    function resetSecondCanvasToRoleStage() {
+      const roleContainer = document.getElementById("role-container");
+      const viewer = document.getElementById("pdfViewer");
+      const status = document.getElementById("pdfStatus");
+      roleContainer.classList.remove("pdf-mode");
+      viewer.style.display = "none";
+      viewer.innerHTML = "";
+      viewer.scrollTop = 0;
+      status.style.display = "none";
+      currentPdfUrl = "";
+      currentPdfRole = "";
+      pdfScrollTop = 0;
+    }
+
+    function buildProgressPayload() {
+      return {
+        playerName: authUsername,
+        currentPage,
+        maxPageVisited,
+        currentPdfUrl,
+        currentPdfRole,
+        pdfScrollTop,
+        inputValues: getInputSnapshot(),
+        draggablePositions: getDraggableSnapshot()
+      };
+    }
+
+    async function applyProgressPayload(payload) {
+      if (!payload || typeof payload !== "object") return;
+
+      applyInputSnapshot(payload.inputValues || {});
+      applyDraggableSnapshot(payload.draggablePositions || {});
+
+      currentPage = Number(payload.currentPage);
+      if (!Number.isInteger(currentPage) || currentPage < 1 || currentPage > totalPages) currentPage = 1;
+
+      maxPageVisited = Number(payload.maxPageVisited);
+      if (!Number.isInteger(maxPageVisited) || maxPageVisited < currentPage) maxPageVisited = currentPage;
+      if (maxPageVisited > totalPages) maxPageVisited = totalPages;
+
+      currentPdfUrl = payload.currentPdfUrl || "";
+      currentPdfRole = payload.currentPdfRole || "";
+      pdfScrollTop = Number(payload.pdfScrollTop) || 0;
+
+      showPage(currentPage);
+
+      if (currentPdfUrl) {
+        await renderPdfIntoSecondCanvas(currentPdfUrl, currentPdfRole, true);
+      } else {
+        resetSecondCanvasToRoleStage();
+      }
+    }
+
+    function hasDraggedPositions(snapshot) {
+      const safe = snapshot && typeof snapshot === "object" ? snapshot : {};
+      return Object.keys(safe).some(id => {
+        const current = safe[id];
+        const base = dragDefaults[id];
+        if (!current || !base) return false;
+        return Math.abs((current.left || 0) - base.left) > 0.5 || Math.abs((current.top || 0) - base.top) > 0.5;
+      });
+    }
+
+    function payloadHasMeaningfulProgress(progress) {
+      const safe = progress && typeof progress === "object" ? progress : {};
+      const inputValues = safe.inputValues && typeof safe.inputValues === "object" ? safe.inputValues : {};
+      const draggablePositions = safe.draggablePositions && typeof safe.draggablePositions === "object" ? safe.draggablePositions : {};
+
+      const hasInputs = Object.values(inputValues).some(v => String(v || "").trim() !== "");
+      const hasDrags = hasDraggedPositions(draggablePositions);
+      const hasOtherProgress =
+        Number(safe.currentPage || 1) > 1 ||
+        Number(safe.maxPageVisited || 1) > 1 ||
+        !!safe.currentPdfUrl;
+
+      return hasInputs || hasDrags || hasOtherProgress;
+    }
+
+    function getPayloadProgressScore(progress) {
+      const safe = progress && typeof progress === "object" ? progress : {};
+      const inputValues = safe.inputValues && typeof safe.inputValues === "object" ? safe.inputValues : {};
+      const draggablePositions = safe.draggablePositions && typeof safe.draggablePositions === "object" ? safe.draggablePositions : {};
+
+      const filledInputs = Object.values(inputValues).filter(v => String(v || "").trim() !== "").length;
+      const draggedCount = hasDraggedPositions(draggablePositions) ? 1 : 0;
+
+      const currentPageNum = Number(safe.currentPage);
+      const maxVisited = Number(safe.maxPageVisited);
+
+      return ((Number.isFinite(maxVisited) ? maxVisited : 1) * 1000) +
+             ((Number.isFinite(currentPageNum) ? currentPageNum : 1) * 100) +
+             (filledInputs * 5) +
+             (draggedCount * 20) +
+             (safe.currentPdfUrl ? 1 : 0);
+    }
+
+    async function apiFetch(path, options = {}) {
+      const headers = {
+        "Content-Type": "application/json",
+        ...(options.headers || {})
+      };
+
+      if (authToken) {
+        headers.Authorization = "Bearer " + authToken;
+      }
+
+      const response = await fetch(WORKER_BASE_URL + path, {
+        method: options.method || "GET",
+        headers,
+        body: options.body
+      });
+
+      const json = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(json.error || "Request failed");
+      }
+      return json;
+    }
+
+    async function registerUser() {
+      const username = document.getElementById("student-username").value.trim();
+      const password = document.getElementById("student-password").value;
+
+      if (!username || !password) {
+        setAuthStatus("Enter username and password", true);
+        return;
+      }
+
+      try {
+        setAuthStatus("Registering...");
+        const result = await apiFetch("/api/register", {
+          method: "POST",
+          body: JSON.stringify({ username, password, appId: APP_ID })
+        });
+
+        saveSessionLocally(result.token, result.username || username);
+        document.getElementById("student-password").value = "";
+
+        if (result.saveData) {
+          await applyProgressPayload(result.saveData);
+        }
+
+        setAuthStatus("Account created.");
+        queueCloudSave();
+      } catch (err) {
+        setAuthStatus(err.message || "Register failed", true);
+      }
+    }
+
+    async function loginUser() {
+      const username = document.getElementById("student-username").value.trim();
+      const password = document.getElementById("student-password").value;
+
+      if (!username || !password) {
+        setAuthStatus("Enter username and password", true);
+        return;
+      }
+
+      try {
+        setAuthStatus("Logging in...");
+        const localPayload = buildProgressPayload();
+
+        const result = await apiFetch("/api/login", {
+          method: "POST",
+          body: JSON.stringify({ username, password, appId: APP_ID })
+        });
+
+        saveSessionLocally(result.token, result.username || username);
+        document.getElementById("student-password").value = "";
+
+        const remotePayload = result.saveData || {};
+        const localHas = payloadHasMeaningfulProgress(localPayload);
+        const remoteHas = payloadHasMeaningfulProgress(remotePayload);
+
+        if (localHas && remoteHas) {
+          const localScore = getPayloadProgressScore(localPayload);
+          const remoteScore = getPayloadProgressScore(remotePayload);
+
+          if (localScore >= remoteScore) {
+            setAuthStatus("Keeping current progress...");
+            await saveProgressToServer();
+          } else {
+            await applyProgressPayload(remotePayload);
+            setAuthStatus("Loaded saved progress.");
+          }
+        } else if (localHas) {
+          setAuthStatus("Saving current progress...");
+          await saveProgressToServer();
+        } else if (remoteHas) {
+          await applyProgressPayload(remotePayload);
+          setAuthStatus("Loaded saved progress.");
+        } else {
+          setAuthStatus("Login successful.");
+        }
+      } catch (err) {
+        setAuthStatus(err.message || "Login failed", true);
+      }
+    }
+
+    async function loadProgressFromServer() {
+      if (!authToken) return;
+
+      try {
+        const result = await apiFetch("/api/load?appId=" + encodeURIComponent(APP_ID), { method: "GET" });
+        if (result.saveData) {
+          await applyProgressPayload(result.saveData);
+        }
+        if (result.username) {
+          authUsername = result.username;
+          localStorage.setItem(SESSION_STORAGE.username, authUsername);
+        }
+        setAuthStatus("Signed in as " + authUsername);
+      } catch (err) {
+        setAuthStatus(err.message || "Could not load progress", true);
+      }
+    }
+
+    async function saveProgressToServer() {
+      if (!authToken || saveInFlight) return;
+      saveInFlight = true;
+
+      try {
+        setSaveStatus("Saving...");
+        await apiFetch("/api/save", {
+          method: "POST",
+          body: JSON.stringify({
+            appId: APP_ID,
+            saveData: buildProgressPayload()
+          })
+        });
+        setSaveStatus("Saved");
+        setAuthStatus("Saved for " + authUsername);
+      } catch (err) {
+        setSaveStatus("Save failed");
+        setAuthStatus(err.message || "Save failed", true);
+      } finally {
+        saveInFlight = false;
+        if (saveQueued) {
+          saveQueued = false;
+          saveProgressToServer();
+        }
+      }
+    }
+
+    function queueCloudSave() {
+      if (isApplyingRemoteData || !authToken) return;
+
+      clearTimeout(autoSaveTimer);
+      autoSaveTimer = setTimeout(() => {
+        if (saveInFlight) {
+          saveQueued = true;
+          return;
+        }
+        saveProgressToServer();
+      }, 900);
+    }
+
+    async function logoutUser() {
+      clearTimeout(autoSaveTimer);
+
+      try {
+        if (authToken) {
+          await apiFetch("/api/logout", {
+            method: "POST",
+            body: "{}"
+          });
+        }
+      } catch (err) {
+        console.error(err);
+      }
+
+      clearSessionLocally();
+      document.getElementById("student-password").value = "";
+      setAuthStatus("Logged out");
+      setSaveStatus("Not saved yet");
+    }
 
     function updateProgress() {
-      const p = (maxPageVisited / totalPages) * 100;
-      document.getElementById("progress").style.width = p + "%";
-      document.getElementById("progressText").innerText = p.toFixed(0) + "% completed";
+      const pct = (maxPageVisited / totalPages) * 100;
+      document.getElementById("progress").style.width = pct + "%";
+      document.getElementById("progressText").innerText = pct.toFixed(0) + "% completed";
     }
 
     function showPage(p) {
@@ -502,93 +1223,92 @@
       }
       document.getElementById("page" + p).classList.add("active");
 
-      if (p === 1) {
-        document.getElementById("prev-btn").style.display = "none";
-        document.getElementById("next-btn").style.display = "inline-block";
-      } else if (p === totalPages) {
-        document.getElementById("prev-btn").style.display = "inline-block";
-        document.getElementById("next-btn").style.display = "none";
-      } else {
-        document.getElementById("prev-btn").style.display = "inline-block";
-        document.getElementById("next-btn").style.display = "inline-block";
-      }
+      document.getElementById("prev-btn").style.display = p === 1 ? "none" : "inline-block";
+      document.getElementById("next-btn").style.display = p === totalPages ? "none" : "inline-block";
 
       updateProgress();
     }
 
-    function nextPage() {
-      if (currentPage === 5) {
+    function wait(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function runCanvasTransition(action) {
+      const overlay = document.getElementById("pageTransitionOverlay");
+      overlay.style.pointerEvents = "auto";
+      overlay.style.opacity = "1";
+      await wait(280);
+      action();
+      await wait(60);
+      overlay.style.opacity = "0";
+      await wait(280);
+      overlay.style.pointerEvents = "none";
+    }
+
+    function validateCurrentPage(pageNum) {
+      if (pageNum === 5) {
         const t = document.getElementById("middleTopInput").value.trim().toLowerCase();
         const b = document.getElementById("middleBottomInput").value.trim().toLowerCase();
-        if (t !== "45" || b !== "45") {
-          alert("❌ Nah. Mrs. James needs you to be more careful!");
-          return;
-        }
+        return t === "45" && b === "45";
       }
 
-      if (currentPage === 6) {
+      if (pageNum === 6) {
         const v = document.getElementById("page6MiddleInput").value.trim().toLowerCase();
-        if (v !== "30") {
-          alert("❌ Nah. Mrs. James needs you to be more careful!");
-          return;
-        }
+        return v === "30";
       }
 
-      if (currentPage === 9 || currentPage === 10) {
-        const ids = currentPage === 9
+      if (pageNum === 9 || pageNum === 10) {
+        const ids = pageNum === 9
           ? ["p9box3","p9box4","p9box5","p9box6","p9box7","p9box8","p9box9","p9box10","p9box11","p9box12","p9box13","p9box14","p9box15","p9box16","p9box17","p9box18"]
           : ["p10box3","p10box4","p10box5","p10box6","p10box7","p10box8","p10box9","p10box10","p10box11","p10box12","p10box13","p10box14","p10box15","p10box16","p10box17","p10box18"];
-
-        for (let id of ids) {
-          if (document.getElementById(id).value.trim() === "") {
-            alert("❌ Nah. Mrs. James needs you to be more careful!");
-            return;
-          }
-        }
+        return ids.every(id => document.getElementById(id).value.trim() !== "");
       }
 
-      if (currentPage === 12) {
-        if (
-          document.getElementById("p12box1").value.trim().toLowerCase() !== "yes" ||
-          document.getElementById("p12box2").value.trim().toLowerCase() !== "no"  ||
-          document.getElementById("p12box3").value.trim().toLowerCase() !== "no"  ||
-          document.getElementById("p12box4").value.trim().toLowerCase() !== "yes"
-        ) {
-          alert("❌ Nah. Mrs. James needs you to be more careful!");
-          return;
-        }
+      if (pageNum === 12) {
+        return (
+          document.getElementById("p12box1").value.trim().toLowerCase() === "yes" &&
+          document.getElementById("p12box2").value.trim().toLowerCase() === "no" &&
+          document.getElementById("p12box3").value.trim().toLowerCase() === "no" &&
+          document.getElementById("p12box4").value.trim().toLowerCase() === "yes"
+        );
       }
 
-      if (currentPage === 13) {
-        if (
-          document.getElementById("p13box1").value.trim().toLowerCase() !== "3" ||
-          document.getElementById("p13box2").value.trim().toLowerCase() !== "4" ||
-          document.getElementById("p13box3").value.trim().toLowerCase() !== "5" ||
-          document.getElementById("p13box4").value.trim().toLowerCase() !== "6" ||
-          document.getElementById("p13box5").value.trim().toLowerCase() !== "7"
-        ) {
-          alert("❌ Nah. Mrs. James needs you to be more careful!");
-          return;
-        }
+      if (pageNum === 13) {
+        return (
+          document.getElementById("p13box1").value.trim().toLowerCase() === "3" &&
+          document.getElementById("p13box2").value.trim().toLowerCase() === "4" &&
+          document.getElementById("p13box3").value.trim().toLowerCase() === "5" &&
+          document.getElementById("p13box4").value.trim().toLowerCase() === "6" &&
+          document.getElementById("p13box5").value.trim().toLowerCase() === "7"
+        );
       }
 
-      if (currentPage === 14) {
-        if (
-          document.getElementById("p14box1").value.trim().toLowerCase() !== "1" ||
-          document.getElementById("p14box9").value.trim().toLowerCase() !== "9" ||
-          document.getElementById("p14box10").value.trim().toLowerCase() !== "third" ||
-          document.getElementById("p14box11").value.trim().toLowerCase() !== "sum" ||
-          document.getElementById("p14box12").value.trim().toLowerCase() !== "difference"
-        ) {
-          alert("❌ Nah. Mrs. James needs you to be more careful!");
-          return;
-        }
+      if (pageNum === 14) {
+        return (
+          document.getElementById("p14box1").value.trim().toLowerCase() === "1" &&
+          document.getElementById("p14box9").value.trim().toLowerCase() === "9" &&
+          document.getElementById("p14box10").value.trim().toLowerCase() === "third" &&
+          document.getElementById("p14box11").value.trim().toLowerCase() === "sum" &&
+          document.getElementById("p14box12").value.trim().toLowerCase() === "difference"
+        );
+      }
+
+      return true;
+    }
+
+    async function nextPage() {
+      if (!validateCurrentPage(currentPage)) {
+        showMessagePopup(WRONG_MESSAGE);
+        return;
       }
 
       if (currentPage < totalPages) {
-        currentPage++;
-        if (currentPage > maxPageVisited) maxPageVisited = currentPage;
-        showPage(currentPage);
+        await runCanvasTransition(() => {
+          currentPage++;
+          if (currentPage > maxPageVisited) maxPageVisited = currentPage;
+          showPage(currentPage);
+        });
+        queueCloudSave();
       }
     }
 
@@ -596,26 +1316,15 @@
       if (currentPage > 1) {
         currentPage--;
         showPage(currentPage);
+        queueCloudSave();
       }
-    }
-
-    function setupPersistence() {
-      const inp = document.querySelectorAll("input.typeable");
-      inp.forEach(el => {
-        const key = el.id;
-        const stored = localStorage.getItem(key);
-        if (stored !== null) el.value = stored;
-        el.addEventListener("input", () => {
-          localStorage.setItem(key, el.value);
-        });
-      });
     }
 
     function makeDraggable(el) {
       el.onmousedown = function (e) {
         e.preventDefault();
-        let ox = e.clientX - parseInt(window.getComputedStyle(el).left);
-        let oy = e.clientY - parseInt(window.getComputedStyle(el).top);
+        const ox = e.clientX - parseFloat(window.getComputedStyle(el).left);
+        const oy = e.clientY - parseFloat(window.getComputedStyle(el).top);
 
         function moveH(e) {
           el.style.left = (e.clientX - ox) + "px";
@@ -625,6 +1334,7 @@
         function upH() {
           document.removeEventListener("mousemove", moveH);
           document.removeEventListener("mouseup", upH);
+          queueCloudSave();
         }
 
         document.addEventListener("mousemove", moveH);
@@ -632,33 +1342,25 @@
       };
     }
 
-    function confirmName() {
-      const ni = document.getElementById("username");
-      const name = ni.value.trim();
-      if (name !== "") {
-        localStorage.setItem("username", name);
-        ni.disabled = true;
-        alert("Name confirmed as: " + name);
-      } else alert("Please enter a name.");
-    }
-    
-    function openIntro(){
-    window.open("https://www.youtube.com/watch?v=PFy9wgmUADc", "_blank");
+    function initTypeableInputs() {
+      getTypeableInputs().forEach(el => {
+        el.addEventListener("input", queueCloudSave);
+      });
     }
 
-
-    /* -----------------------------
-       PDF.js viewer (2nd canvas)
-       ----------------------------- */
     function initPdfJs() {
       pdfjsLib.GlobalWorkerOptions.workerSrc =
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
     }
 
-    async function renderPdfIntoSecondCanvas(pdfUrl) {
+    async function renderPdfIntoSecondCanvas(pdfUrl, roleKey = "", preserveScroll = false) {
       const roleContainer = document.getElementById("role-container");
       const viewer = document.getElementById("pdfViewer");
       const status = document.getElementById("pdfStatus");
+
+      currentPdfUrl = pdfUrl || "";
+      currentPdfRole = roleKey || "";
+      if (!preserveScroll) pdfScrollTop = 0;
 
       roleContainer.classList.add("pdf-mode");
       viewer.style.display = "block";
@@ -674,10 +1376,9 @@
 
         status.textContent = "Rendering pages...";
 
-        const targetWidth = 920; // fit inside 960
+        const targetWidth = 920;
         for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
           const page = await pdf.getPage(pageNum);
-
           const viewport1 = page.getViewport({ scale: 1 });
           const scale = targetWidth / viewport1.width;
           const viewport = page.getViewport({ scale });
@@ -694,6 +1395,8 @@
         }
 
         status.style.display = "none";
+        viewer.scrollTop = preserveScroll ? pdfScrollTop : 0;
+        queueCloudSave();
       } catch (err) {
         console.error("PDF.js render error:", err);
         status.textContent = "Failed to load PDF (see Console).";
@@ -702,131 +1405,199 @@
 
     function initSecondCanvasHotspots() {
       document.getElementById("hotspot-officer").addEventListener("click", function () {
-        renderPdfIntoSecondCanvas("https://daryeaye.github.io/geotopia/GT1%20Officer+.pdf");
+        renderPdfIntoSecondCanvas(ROLE_PDF_URLS.officer, "officer");
       });
 
       document.getElementById("hotspot-professor").addEventListener("click", function () {
-        renderPdfIntoSecondCanvas("https://daryeaye.github.io/geotopia/GT1%20Professor+.pdf");
+        renderPdfIntoSecondCanvas(ROLE_PDF_URLS.professor, "professor");
       });
 
       document.getElementById("hotspot-hacker").addEventListener("click", function () {
-        renderPdfIntoSecondCanvas("https://daryeaye.github.io/geotopia/GT1%20Hacker+.pdf");
+        renderPdfIntoSecondCanvas(ROLE_PDF_URLS.hacker, "hacker");
       });
 
       document.getElementById("hotspot-video").addEventListener("click", function () {
-        window.open("https://www.youtube.com/watch?v=Fj98o3aFfk8", "_blank");
+        window.open(ROLE_VIDEO_URL, "_blank");
+      });
+
+      document.getElementById("pdfViewer").addEventListener("scroll", function (e) {
+        pdfScrollTop = e.target.scrollTop;
+        queueCloudSave();
       });
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
-      initPdfJs();
-      showPage(currentPage);
-      setupPersistence();
+    function initOpenFileButton() {
+      document.getElementById("openFileBtn").addEventListener("click", function () {
+        if (!currentPdfUrl) {
+          showMessagePopup("Pick a role file first.");
+          return;
+        }
+        window.open(currentPdfUrl, "_blank");
+      });
+    }
 
-      document.querySelectorAll(".draggable").forEach(el => { makeDraggable(el); });
-
-      const sn = localStorage.getItem("username");
-      const ni = document.getElementById("username");
-      if (sn !== null && sn !== "") {
-        ni.value = sn;
-        ni.disabled = true;
-      }
-
-      document.getElementById("unlockBtn").addEventListener("click", function () {
-        let yi = document.getElementById("p15yellow");
-        let val = yi.value.trim().toLowerCase();
+    function initUnlockButton() {
+      document.getElementById("unlockBtn").addEventListener("click", async function () {
+        const yi = document.getElementById("p15yellow");
+        const val = yi.value.trim().toLowerCase();
 
         if (val === "121") {
-          alert("✅Great job! Ask the merchant for the rest of the code.");
+          showMessagePopup(SUCCESS_HINT);
         } else if (val === "121ja") {
-          window.open("https://daryeaye.github.io/geotopia/batele.pdf", "_blank");
+          window.open(FINAL_UNLOCK_URL, "_blank");
           yi.value = "";
-          localStorage.setItem("p15yellow", "");
+          queueCloudSave();
         } else {
-          alert("❌ Nah. Mrs. James needs you to be more careful!");
+          showMessagePopup(WRONG_MESSAGE);
         }
       });
+    }
 
-      initSecondCanvasHotspots();
-    });
-  </script>
+    function initTranslatorWidget() {
+      const widget = document.getElementById("side-widget");
+      const collapseBtn = document.getElementById("collapse-widget");
 
-  <div id="side-widget">
-    <p class="title">Need translation?</p>
-    <button id="select-text">Select Text</button>
-    <p><a href="https://translate.google.com/?sl=en&tl=es&op=images" target="_blank">Click me and paste from clipboard</a></p>
-  </div>
+      collapseBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        widget.classList.add("collapsed");
+      });
 
-  <script>
-    document.getElementById("select-text").addEventListener("click", function () {
-      const o = document.createElement("div");
-      o.id = "selection-overlay";
-      document.body.appendChild(o);
-
-      let sX, sY, sB;
-
-      o.addEventListener("mousedown", function (e) {
-        sX = e.clientX; sY = e.clientY;
-
-        sB = document.createElement("div");
-        sB.id = "selection-box";
-        sB.style.left = sX + "px";
-        sB.style.top = sY + "px";
-        sB.style.width = "0px";
-        sB.style.height = "0px";
-        o.appendChild(sB);
-
-        function mH(e) {
-          const cX = e.clientX, cY = e.clientY;
-          const l = Math.min(sX, cX), t = Math.min(sY, cY);
-          const w = Math.abs(cX - sX), h = Math.abs(cY - sY);
-          sB.style.left = l + "px";
-          sB.style.top = t + "px";
-          sB.style.width = w + "px";
-          sB.style.height = h + "px";
+      widget.addEventListener("click", function () {
+        if (widget.classList.contains("collapsed")) {
+          widget.classList.remove("collapsed");
         }
+      });
+    }
 
-        function uH() {
-          o.removeEventListener("mousemove", mH);
-          o.removeEventListener("mouseup", uH);
+    function initTranslationScreenshotTool() {
+      document.getElementById("select-text").addEventListener("click", function () {
+        const overlay = document.createElement("div");
+        overlay.id = "selection-overlay";
+        document.body.appendChild(overlay);
 
-          const r = sB.getBoundingClientRect();
-          document.body.removeChild(o);
+        let startX, startY, selectionBox;
 
-          const T = document.getElementById("container");
-          const TR = T.getBoundingClientRect();
+        overlay.addEventListener("mousedown", function (e) {
+          startX = e.clientX;
+          startY = e.clientY;
 
-          html2canvas(T, { useCORS: true, allowTaint: false }).then(canvas => {
-            const sf = canvas.width / TR.width;
-            const sx = (r.left - TR.left) * sf;
-            const sy = (r.top - TR.top) * sf;
-            const sw = r.width * sf;
-            const sh = r.height * sf;
+          selectionBox = document.createElement("div");
+          selectionBox.id = "selection-box";
+          selectionBox.style.left = startX + "px";
+          selectionBox.style.top = startY + "px";
+          selectionBox.style.width = "0px";
+          selectionBox.style.height = "0px";
+          overlay.appendChild(selectionBox);
 
-            const cc = document.createElement("canvas");
-            cc.width = sw;
-            cc.height = sh;
+          function mouseMoveHandler(e) {
+            const currentX = e.clientX;
+            const currentY = e.clientY;
+            const rectLeft = Math.min(startX, currentX);
+            const rectTop = Math.min(startY, currentY);
+            const rectWidth = Math.abs(currentX - startX);
+            const rectHeight = Math.abs(currentY - startY);
 
-            const ctx = cc.getContext("2d");
-            ctx.drawImage(canvas, sx, sy, sw, sh, 0, 0, sw, sh);
+            selectionBox.style.left = rectLeft + "px";
+            selectionBox.style.top = rectTop + "px";
+            selectionBox.style.width = rectWidth + "px";
+            selectionBox.style.height = rectHeight + "px";
+          }
 
-            cc.toBlob(blob => {
-              if (blob) {
-                const itm = new ClipboardItem({ "image/png": blob });
-                navigator.clipboard.write([itm]).then(() => {
-                  alert("Screenshot copied to clipboard.");
-                }).catch(err => {
-                  console.error("Failed to copy screenshot to clipboard", err);
-                  alert("Failed to copy screenshot to clipboard.");
-                });
-              }
+          function mouseUpHandler() {
+            overlay.removeEventListener("mousemove", mouseMoveHandler);
+            overlay.removeEventListener("mouseup", mouseUpHandler);
+
+            const boxRect = selectionBox.getBoundingClientRect();
+            document.body.removeChild(overlay);
+
+            const target = document.getElementById("container");
+            const targetRect = target.getBoundingClientRect();
+
+            html2canvas(target, { useCORS: true, allowTaint: false }).then(canvas => {
+              const scaleFactor = canvas.width / targetRect.width;
+              const sx = (boxRect.left - targetRect.left) * scaleFactor;
+              const sy = (boxRect.top - targetRect.top) * scaleFactor;
+              const sWidth = boxRect.width * scaleFactor;
+              const sHeight = boxRect.height * scaleFactor;
+
+              const croppedCanvas = document.createElement("canvas");
+              croppedCanvas.width = sWidth;
+              croppedCanvas.height = sHeight;
+
+              const ctx = croppedCanvas.getContext("2d");
+              ctx.drawImage(canvas, sx, sy, sWidth, sHeight, 0, 0, sWidth, sHeight);
+
+              croppedCanvas.toBlob(blob => {
+                if (blob) {
+                  const item = new ClipboardItem({ "image/png": blob });
+                  navigator.clipboard.write([item]).then(() => {
+                    showMessagePopup("Screenshot copied to clipboard.");
+                  }).catch(err => {
+                    console.error("Failed to copy screenshot to clipboard", err);
+                    showMessagePopup("Failed to copy screenshot to clipboard.");
+                  });
+                }
+              });
             });
-          });
-        }
+          }
 
-        o.addEventListener("mousemove", mH);
-        o.addEventListener("mouseup", uH);
+          overlay.addEventListener("mousemove", mouseMoveHandler);
+          overlay.addEventListener("mouseup", mouseUpHandler);
+        });
       });
+    }
+
+    let tutorialIndex = 0;
+
+    function showTutorial(index) {
+      tutorialIndex = index;
+      document.getElementById("tutorialImage").src = TUTORIAL_IMAGES[tutorialIndex];
+      document.getElementById("tutorialOverlay").style.display = "flex";
+    }
+
+    function nextTutorialSlide() {
+      tutorialIndex++;
+      if (tutorialIndex >= TUTORIAL_IMAGES.length) {
+        document.getElementById("tutorialOverlay").style.display = "none";
+        localStorage.setItem(TUTORIAL_STORAGE_KEY, "1");
+        return;
+      }
+      document.getElementById("tutorialImage").src = TUTORIAL_IMAGES[tutorialIndex];
+    }
+
+    function initTutorial() {
+      document.getElementById("tutorialNext").addEventListener("click", nextTutorialSlide);
+      if (!localStorage.getItem(TUTORIAL_STORAGE_KEY)) {
+        showTutorial(0);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", async function () {
+      initPdfJs();
+      captureDragDefaults();
+      document.querySelectorAll(".draggable").forEach(el => makeDraggable(el));
+      initTypeableInputs();
+      initSecondCanvasHotspots();
+      initOpenFileButton();
+      initUnlockButton();
+      initTranslatorWidget();
+      initTranslationScreenshotTool();
+      initTutorial();
+
+      document.getElementById("introBtn").addEventListener("click", openIntro);
+      document.getElementById("registerBtn").addEventListener("click", registerUser);
+      document.getElementById("loginBtn").addEventListener("click", loginUser);
+      document.getElementById("logoutBtn").addEventListener("click", logoutUser);
+      document.getElementById("prev-btn").addEventListener("click", prevPage);
+      document.getElementById("next-btn").addEventListener("click", nextPage);
+
+      restoreSessionLocally();
+      showPage(currentPage);
+      updateProgress();
+
+      if (authToken) {
+        await loadProgressFromServer();
+      }
     });
   </script>
 
