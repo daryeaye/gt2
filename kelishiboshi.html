@@ -119,19 +119,12 @@
       flex-wrap: wrap;
     }
 
-    #student-username, #student-password {
-      font-size: 16px;
-      padding: 5px 8px;
-      width: 150px;
-      box-sizing: border-box;
-    }
-
-    #registerBtn, #loginBtn, #logoutBtn, #introBtn, #openFileBtn, #prev-btn, #next-btn,
+    #logoutBtn, #introBtn, #authRegisterBtn, #authLoginBtn, #openFileBtn, #prev-btn, #next-btn,
     #unlockBtn, #collapse-widget, #side-widget button:not(#collapse-widget) {
       font-family: "Love Ya Like A Sister", cursive;
     }
 
-    #registerBtn, #loginBtn, #logoutBtn, #introBtn {
+    #logoutBtn, #introBtn, #authRegisterBtn, #authLoginBtn {
       font-size: 22px;
       padding: 6px 12px;
       cursor: pointer;
@@ -147,6 +140,74 @@
       color: #222;
       min-width: 170px;
       text-align: right;
+    }
+
+
+    #authOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.78);
+      z-index: 15000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #authOverlayBox {
+      width: min(430px, 88vw);
+      background: #fffdf7;
+      border: 3px solid #000;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      padding: 24px 20px 18px;
+      text-align: center;
+      box-sizing: border-box;
+    }
+
+    #authOverlayTitle {
+      font-family: "Love Ya Like A Sister", cursive;
+      font-size: 34px;
+      line-height: 1.05;
+      margin-bottom: 10px;
+      color: #111;
+    }
+
+    #authOverlayText {
+      font-family: "Comic Sans MS", sans-serif;
+      font-size: 16px;
+      line-height: 1.35;
+      color: #222;
+      margin-bottom: 14px;
+    }
+
+    #auth-username,
+    #auth-password {
+      width: 100%;
+      font-size: 18px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+      border: 2px solid #000;
+      border-radius: 8px;
+      font-family: "Comic Sans MS", sans-serif;
+      background: #fff;
+    }
+
+    #authOverlayButtons {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    #authModalStatus {
+      font-family: "Comic Sans MS", sans-serif;
+      font-size: 14px;
+      line-height: 1.3;
+      min-height: 18px;
+      margin-top: 12px;
+      color: #222;
     }
 
     #progressBar {
@@ -522,10 +583,6 @@
     <div id="header">
       <div id="topAuthRow">
         <div id="topAuthLeft">
-          <input type="text" id="student-username" placeholder="Username" autocomplete="username" />
-          <input type="password" id="student-password" placeholder="Password" autocomplete="current-password" />
-          <button id="registerBtn" type="button">Register</button>
-          <button id="loginBtn" type="button">Log In</button>
           <button id="logoutBtn" type="button" style="display:none;">Log Out</button>
           <button id="introBtn" type="button">Intro</button>
         </div>
@@ -748,9 +805,23 @@
     <p><a href="https://translate.google.com/?sl=en&tl=es&op=images" target="_blank">Click me and paste from clipboard</a></p>
   </div>
 
+
+  <div id="authOverlay">
+    <div id="authOverlayBox">
+      <div id="authOverlayTitle">Sign in to start</div>
+      <div id="authOverlayText">Please log in or register before entering the quest. Username cannot contain spaces.</div>
+      <input type="text" id="auth-username" placeholder="Username" autocomplete="username" />
+      <input type="password" id="auth-password" placeholder="Password" autocomplete="current-password" />
+      <div id="authOverlayButtons">
+        <button id="authRegisterBtn" type="button">Register</button>
+        <button id="authLoginBtn" type="button">Log In</button>
+      </div>
+      <div id="authModalStatus"></div>
+    </div>
+  </div>
+
   <script>
     const TUTORIAL_IMAGES = [
-      "https://daryeaye.github.io/geotopia/t1.jpg",
       "https://daryeaye.github.io/geotopia/t2.jpg",
       "https://daryeaye.github.io/geotopia/t3.jpg"
     ];
@@ -806,6 +877,43 @@
     }
 
 
+    function setAuthModalStatus(message, isError = false) {
+      const status = document.getElementById("authModalStatus");
+      if (!status) return;
+      status.textContent = message || "";
+      status.style.color = isError ? "#b00020" : "#222";
+    }
+
+    function openAuthOverlay(prefillUsername = "") {
+      const overlay = document.getElementById("authOverlay");
+      const usernameInput = document.getElementById("auth-username");
+      const passwordInput = document.getElementById("auth-password");
+
+      if (prefillUsername) {
+        usernameInput.value = prefillUsername;
+      } else if (authUsername) {
+        usernameInput.value = authUsername;
+      }
+
+      passwordInput.value = "";
+      setAuthModalStatus("Please sign in to continue.", false);
+      overlay.style.display = "flex";
+      usernameInput.focus();
+    }
+
+    function closeAuthOverlay() {
+      const overlay = document.getElementById("authOverlay");
+      overlay.style.display = "none";
+      setAuthModalStatus("", false);
+    }
+
+    function maybeRequireAuthOverlay() {
+      if (!authToken) {
+        openAuthOverlay(authUsername || "");
+      }
+    }
+
+
     function closeCustomPopup() {
       document.getElementById("customPopupOverlay").style.display = "none";
       document.getElementById("customPopupMessage").textContent = "";
@@ -842,15 +950,10 @@
 
     function updateAuthUI() {
       const signedIn = !!authToken;
-      document.getElementById("registerBtn").style.display = signedIn ? "none" : "inline-block";
-      document.getElementById("loginBtn").style.display = signedIn ? "none" : "inline-block";
       document.getElementById("logoutBtn").style.display = signedIn ? "inline-block" : "none";
-
+      setAuthStatus(signedIn ? ("Logged in as " + (authUsername || "student")) : "Not logged in", false);
       if (signedIn) {
-        document.getElementById("student-username").value = authUsername || "";
-        setAuthStatus("Signed in as " + authUsername);
-      } else {
-        setAuthStatus("Not logged in");
+        closeAuthOverlay();
       }
     }
 
@@ -873,9 +976,6 @@
     function restoreSessionLocally() {
       authToken = localStorage.getItem(SESSION_STORAGE.token) || "";
       authUsername = localStorage.getItem(SESSION_STORAGE.username) || "";
-      if (authUsername) {
-        document.getElementById("student-username").value = authUsername;
-      }
       updateAuthUI();
     }
 
@@ -987,49 +1087,6 @@
       }
     }
 
-    function hasDraggedPositions(snapshot) {
-      const safe = snapshot && typeof snapshot === "object" ? snapshot : {};
-      return Object.keys(safe).some(id => {
-        const current = safe[id];
-        const base = dragDefaults[id];
-        if (!current || !base) return false;
-        return Math.abs((current.left || 0) - base.left) > 0.5 || Math.abs((current.top || 0) - base.top) > 0.5;
-      });
-    }
-
-    function payloadHasMeaningfulProgress(progress) {
-      const safe = progress && typeof progress === "object" ? progress : {};
-      const inputValues = safe.inputValues && typeof safe.inputValues === "object" ? safe.inputValues : {};
-      const draggablePositions = safe.draggablePositions && typeof safe.draggablePositions === "object" ? safe.draggablePositions : {};
-
-      const hasInputs = Object.values(inputValues).some(v => String(v || "").trim() !== "");
-      const hasDrags = hasDraggedPositions(draggablePositions);
-      const hasOtherProgress =
-        Number(safe.currentPage || 1) > 1 ||
-        Number(safe.maxPageVisited || 1) > 1 ||
-        !!safe.currentPdfUrl;
-
-      return hasInputs || hasDrags || hasOtherProgress;
-    }
-
-    function getPayloadProgressScore(progress) {
-      const safe = progress && typeof progress === "object" ? progress : {};
-      const inputValues = safe.inputValues && typeof safe.inputValues === "object" ? safe.inputValues : {};
-      const draggablePositions = safe.draggablePositions && typeof safe.draggablePositions === "object" ? safe.draggablePositions : {};
-
-      const filledInputs = Object.values(inputValues).filter(v => String(v || "").trim() !== "").length;
-      const draggedCount = hasDraggedPositions(draggablePositions) ? 1 : 0;
-
-      const currentPageNum = Number(safe.currentPage);
-      const maxVisited = Number(safe.maxPageVisited);
-
-      return ((Number.isFinite(maxVisited) ? maxVisited : 1) * 1000) +
-             ((Number.isFinite(currentPageNum) ? currentPageNum : 1) * 100) +
-             (filledInputs * 5) +
-             (draggedCount * 20) +
-             (safe.currentPdfUrl ? 1 : 0);
-    }
-
     async function apiFetch(path, options = {}) {
       const headers = {
         "Content-Type": "application/json",
@@ -1054,47 +1111,72 @@
     }
 
     async function registerUser() {
-      const username = document.getElementById("student-username").value.trim();
-      const password = document.getElementById("student-password").value;
+      const usernameInput = document.getElementById("auth-username");
+      const passwordInput = document.getElementById("auth-password");
+
+      const username = usernameInput.value.trim().toLowerCase();
+      const password = passwordInput.value;
 
       if (!username || !password) {
         setAuthStatus("Enter username and password", true);
+        setAuthModalStatus("Enter username and password.", true);
+        return;
+      }
+
+      if (/\s/.test(username)) {
+        setAuthStatus("Username cannot contain spaces.", true);
+        setAuthModalStatus("Username cannot contain spaces.", true);
         return;
       }
 
       try {
         setAuthStatus("Registering...");
+        setAuthModalStatus("Registering...", false);
         const result = await apiFetch("/api/register", {
           method: "POST",
           body: JSON.stringify({ username, password, appId: APP_ID })
         });
 
         saveSessionLocally(result.token, result.username || username);
-        document.getElementById("student-password").value = "";
+        passwordInput.value = "";
 
-        if (result.saveData) {
+        if (result.saveData && typeof result.saveData === "object" && Object.keys(result.saveData).length > 0) {
           await applyProgressPayload(result.saveData);
+        } else {
+          setSaveStatus("Loaded");
         }
 
         setAuthStatus("Account created.");
-        queueCloudSave();
+        setAuthModalStatus("Account created.", false);
+        closeAuthOverlay();
       } catch (err) {
         setAuthStatus(err.message || "Register failed", true);
+        setAuthModalStatus(err.message || "Register failed", true);
       }
     }
 
     async function loginUser() {
-      const username = document.getElementById("student-username").value.trim();
-      const password = document.getElementById("student-password").value;
+      const usernameInput = document.getElementById("auth-username");
+      const passwordInput = document.getElementById("auth-password");
+
+      const username = usernameInput.value.trim().toLowerCase();
+      const password = passwordInput.value;
 
       if (!username || !password) {
         setAuthStatus("Enter username and password", true);
+        setAuthModalStatus("Enter username and password.", true);
+        return;
+      }
+
+      if (/\s/.test(username)) {
+        setAuthStatus("Username cannot contain spaces.", true);
+        setAuthModalStatus("Username cannot contain spaces.", true);
         return;
       }
 
       try {
         setAuthStatus("Logging in...");
-        const localPayload = buildProgressPayload();
+        setAuthModalStatus("Logging in...", false);
 
         const result = await apiFetch("/api/login", {
           method: "POST",
@@ -1102,34 +1184,23 @@
         });
 
         saveSessionLocally(result.token, result.username || username);
-        document.getElementById("student-password").value = "";
+        passwordInput.value = "";
 
-        const remotePayload = result.saveData || {};
-        const localHas = payloadHasMeaningfulProgress(localPayload);
-        const remoteHas = payloadHasMeaningfulProgress(remotePayload);
+        const loadResult = await apiFetch("/api/load?appId=" + encodeURIComponent(APP_ID), { method: "GET" });
 
-        if (localHas && remoteHas) {
-          const localScore = getPayloadProgressScore(localPayload);
-          const remoteScore = getPayloadProgressScore(remotePayload);
-
-          if (localScore >= remoteScore) {
-            setAuthStatus("Keeping current progress...");
-            await saveProgressToServer();
-          } else {
-            await applyProgressPayload(remotePayload);
-            setAuthStatus("Loaded saved progress.");
-          }
-        } else if (localHas) {
-          setAuthStatus("Saving current progress...");
-          await saveProgressToServer();
-        } else if (remoteHas) {
-          await applyProgressPayload(remotePayload);
-          setAuthStatus("Loaded saved progress.");
-        } else {
-          setAuthStatus("Login successful.");
+        if (loadResult && loadResult.username) {
+          authUsername = loadResult.username;
+          localStorage.setItem(SESSION_STORAGE.username, authUsername);
+          updateAuthUI();
         }
+
+        await applyProgressPayload((loadResult && loadResult.saveData) || {});
+        setSaveStatus("Loaded");
+        setAuthModalStatus("Logged in.", false);
+        closeAuthOverlay();
       } catch (err) {
         setAuthStatus(err.message || "Login failed", true);
+        setAuthModalStatus(err.message || "Login failed", true);
       }
     }
 
@@ -1205,10 +1276,10 @@
         console.error(err);
       }
 
+      const prefill = authUsername || "";
       clearSessionLocally();
-      document.getElementById("student-password").value = "";
-      setAuthStatus("Logged out");
       setSaveStatus("Not saved yet");
+      openAuthOverlay(prefill);
     }
 
     function updateProgress() {
@@ -1549,8 +1620,14 @@
 
     let tutorialIndex = 0;
 
-    function showTutorial(index) {
-      tutorialIndex = index;
+    function showTutorial() {
+      const alreadySeen = localStorage.getItem(TUTORIAL_STORAGE_KEY);
+      if (alreadySeen === "yes") {
+        maybeRequireAuthOverlay();
+        return;
+      }
+
+      tutorialIndex = 0;
       document.getElementById("tutorialImage").src = TUTORIAL_IMAGES[tutorialIndex];
       document.getElementById("tutorialOverlay").style.display = "flex";
     }
@@ -1559,7 +1636,8 @@
       tutorialIndex++;
       if (tutorialIndex >= TUTORIAL_IMAGES.length) {
         document.getElementById("tutorialOverlay").style.display = "none";
-        localStorage.setItem(TUTORIAL_STORAGE_KEY, "1");
+        localStorage.setItem(TUTORIAL_STORAGE_KEY, "yes");
+        maybeRequireAuthOverlay();
         return;
       }
       document.getElementById("tutorialImage").src = TUTORIAL_IMAGES[tutorialIndex];
@@ -1567,9 +1645,11 @@
 
     function initTutorial() {
       document.getElementById("tutorialNext").addEventListener("click", nextTutorialSlide);
-      if (!localStorage.getItem(TUTORIAL_STORAGE_KEY)) {
-        showTutorial(0);
-      }
+      TUTORIAL_IMAGES.forEach(url => {
+        const pre = new Image();
+        pre.src = url;
+      });
+      showTutorial();
     }
 
     document.addEventListener("DOMContentLoaded", async function () {
@@ -1582,22 +1662,36 @@
       initUnlockButton();
       initTranslatorWidget();
       initTranslationScreenshotTool();
-      initTutorial();
 
       document.getElementById("introBtn").addEventListener("click", openIntro);
-      document.getElementById("registerBtn").addEventListener("click", registerUser);
-      document.getElementById("loginBtn").addEventListener("click", loginUser);
+      document.getElementById("authRegisterBtn").addEventListener("click", registerUser);
+      document.getElementById("authLoginBtn").addEventListener("click", loginUser);
       document.getElementById("logoutBtn").addEventListener("click", logoutUser);
       document.getElementById("prev-btn").addEventListener("click", prevPage);
       document.getElementById("next-btn").addEventListener("click", nextPage);
+
+      document.getElementById("auth-password").addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          loginUser();
+        }
+      });
 
       restoreSessionLocally();
       showPage(currentPage);
       updateProgress();
 
       if (authToken) {
-        await loadProgressFromServer();
+        try {
+          await loadProgressFromServer();
+        } catch (err) {
+          console.error(err);
+          clearSessionLocally();
+          showPage(currentPage);
+        }
       }
+
+      initTutorial();
     });
   </script>
 
